@@ -63,6 +63,7 @@ package-lock.json
 .DS_Store
 public/.DS_Store
 src/.DS_Store
+.env
 
 /public/dist
 public/dist
