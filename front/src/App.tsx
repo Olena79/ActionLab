@@ -1,9 +1,14 @@
 import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { TranslationProvider } from './translation/TranslationContext'
-import ConstructorPage from './pages/ConstructorPage'
+import MainPage from './pages/MainPage'
 import Header from './components/Header'
-import { CakeSelectionProvider } from './context/CakeContext'
+import CalendarPage from './pages/CalendarPage'
+import Footer from './components/Footer'
+import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './context/ProtectedRoute'
 import { styled } from '@mui/material'
+import VerifyRequiredPage from './components/auth/VerifyRequiredPage '
 
 const StyledBox = styled('div')(() => ({
 	margin: '0 auto',
@@ -16,14 +21,30 @@ const StyledBox = styled('div')(() => ({
 
 const App: React.FC = () => {
 	return (
-		<CakeSelectionProvider>
+		<AuthProvider>
 			<StyledBox>
-				<TranslationProvider>
-					<Header />
-					<ConstructorPage />
-				</TranslationProvider>
+				<Router>
+					<TranslationProvider>
+						<Header />
+
+						<Routes>
+							<Route path='/' element={<MainPage />} />
+							<Route
+								path='/calendar'
+								element={
+									<ProtectedRoute>
+										<CalendarPage />
+									</ProtectedRoute>
+								}
+							/>
+							<Route path='/verify-required' element={<VerifyRequiredPage />} />
+						</Routes>
+
+						<Footer />
+					</TranslationProvider>
+				</Router>
 			</StyledBox>
-		</CakeSelectionProvider>
+		</AuthProvider>
 	)
 }
 

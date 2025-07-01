@@ -1,12 +1,8 @@
 import express from 'express'
-import cakeRoute from './cakeRoute'
-import ingridientRoute from './ingridientRoute'
-import flavorsRoute from './flavorsRoute'
+import authRoutes from './auth'
 
 const router = express.Router()
 
-router.use('/api', cakeRoute)
-router.use('/api', ingridientRoute)
-router.use('/api', flavorsRoute)
+router.use('/auth', authRoutes)
 
 export default router

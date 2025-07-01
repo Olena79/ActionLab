@@ -3,7 +3,7 @@ import ua from './ua.json'
 import en from './en.json'
 
 // Типи мов та контексту
-type LanguageCode = 'UA' | 'EN'
+type LanguageCode = 'ua' | 'en'
 
 interface TranslationContextType {
 	lang: LanguageCode
@@ -16,19 +16,24 @@ const TranslationContext = createContext<TranslationContextType | undefined>(
 	undefined
 )
 
-// Функція отримання мови
 const getLanguage = (): LanguageCode => {
-	return (localStorage.getItem('language') as LanguageCode) || 'UA'
+	return (localStorage.getItem('language') as LanguageCode) || 'ua'
 }
 
 // Статичне завантаження перекладів
-const translations: Record<LanguageCode, Record<string, string>> = {
-	UA: ua,
-	EN: en,
+const translations: Record<LanguageCode, Record<string, any>> = {
+	ua: ua,
+	en: en,
 }
 
-const loadTranslation = (lang: LanguageCode): Record<string, string> => {
-	return translations[lang] || translations.UA
+// 🔧 Глибоке отримання значення з вкладеного обʼєкта
+const getNestedValue = (obj: Record<string, any>, path: string): string => {
+	const result = path.split('.').reduce((acc, key) => {
+		if (acc && typeof acc === 'object') return acc[key]
+		return undefined
+	}, obj)
+
+	return typeof result === 'string' ? result : path
 }
 
 // Провайдер перекладів
@@ -36,19 +41,17 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
 	const [lang, setLang] = useState<LanguageCode>(getLanguage())
-	const [translations, setTranslations] = useState<Record<string, string>>(
-		loadTranslation(getLanguage())
-	)
+	const [currentTranslations, setCurrentTranslations] = useState<
+		Record<string, any>
+	>(translations[getLanguage()])
 
-	// Функція зміни мови
 	const changeLanguage = (newLang: LanguageCode) => {
 		localStorage.setItem('language', newLang)
 		setLang(newLang)
-		setTranslations(loadTranslation(newLang))
+		setCurrentTranslations(translations[newLang] || translations.ua)
 	}
 
-	// Функція `t()` для отримання перекладу
-	const t = (key: string) => translations[key] || key
+	const t = (key: string) => getNestedValue(currentTranslations, key)
 
 	return (
 		<TranslationContext.Provider value={{ lang, t, changeLanguage }}>
@@ -57,7 +60,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({
 	)
 }
 
-// Хук для отримання перекладів
+// Хук для доступу до контексту
 export const useTranslation = (): TranslationContextType => {
 	const context = useContext(TranslationContext)
 	if (!context) {
@@ -66,7 +69,7 @@ export const useTranslation = (): TranslationContextType => {
 	return context
 }
 
-// Хук `useTranslate`
+// Хук з неймспейсом
 export const useTranslate = (namespace?: string) => {
 	const { t } = useTranslation()
 	return (key: string) => t(namespace ? `${namespace}.${key}` : key)

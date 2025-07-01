@@ -1,52 +1,36 @@
 {
-	"hello": "Hello, here you can design your cake",
-	"mainTitle": "Well, let's try.",
-	"mainDescription1": "Dreaming of a special cake but can't explain to the baker exactly what you want? Our Cake Designer is your magic wand in the world of sweets!",
-	"mainDescription2": "Here you can bring to life your boldest confectionery fantasies: round, square, or unicorn-shaped? Light as a cloud or a monumental 5 kg masterpiece? One tier or an entire confectionery skyscraper?",
-	"mainDescription3": "Choose a recipe that will make your taste buds dance with joy — from classic Napoleon to trendy Red Velvet. Coating for any taste: delicate fondant, glossy mirror glaze, or fluffy cream.",
-	"mainDescription4": "Add a special touch to your creation! Figurines of favorite characters, edible flowers, sparkling candles, messages with wishes — everything is in your hands!",
-	"mainDescription5": "Done? Save the template and send your sweet masterpiece's detailed plan to the baker. And if you get confused — check out the video instructions right here",
-	"choose_filling": "Step 1 - choose a cake filling",
-	"choose_filling_classic": "Choose a filling from classic recipes",
-	"choose_filling_own": "Create your own filling",
-	"error_download_cakes": "Error loading cakes",
-	"loading": "Loading...",
-	"select_cake_to_view_details": "Choose a cake recipe",
-
-	"dough": "Dough",
-	"doughFlavor": "Extra dough",
-	"extraDough": "Extra dough",
-	"extraDoughFlavor": "Additional taste of the dough",
-	"cream": "Cream",
-	"creamFlavor": "Cream flavor",
-	"extraCream": "Extra cream",
-	"extraCreamFlavor": "Additional cream flavor",
-	"layer1": "Layer 1",
-	"layer2": "Layer 2",
-	"laye3r": "Layer 3",
-	"topping": "Topping",
-	"toppingCream": "Type of topping cream",
-	"toppingCreamFlavor": "Flavor of topping cream",
-	"decor": "Decor",
-
-	"selected_filling": "Chosen cake filling",
-	"title_dough": "Choose a cake basem, dough",
-	"title_doughFlavors": "Choose the flavor of the dough",
-	"title_cream": "Choose a cream",
-	"title_creamFlavors": "Choose the flavor of the cream",
-	"title_extraIngredients": "If you need an extra layer of dough and/or cream, choose here",
-	"title_extraDough": "Extra Dough",
-	"title_extraDoughFlavors": "Extra DoughFlavor",
-	"title_extraCream": "Extra Cream",
-	"title_extraCreamFlavors": "Extra CreamFlavor",
-	"title_layers": "Optionally, select a layer.",
-	"title_extraLayers": "Maybe you want more layers?",
-	"title_topping": "Choose a cake topping",
-
-	"or": "or",
-	"noData": "No data",
-
-	"choose_bisquit_cake": "Choose biscuit option",
-	"choose_mousse_cake": "Choose mousse option",
-	"choose_form": "Step 2 - choose cake shape"
+	"hello": "Main page",
+	"header": {
+		"calendar": "Сalendar"
+	},
+	"auth": {
+		"enter": "Enter",
+		"exit": "Exit",
+		"registerTitle": "Register",
+		"enterGoogle": "Log in with Google",
+		"login": {
+			"emailNeed": "Email required",
+			"emailInvalid": "Invalid email",
+			"passwordNeed": "Password required",
+			"passwordInvalid": "Password must contain 8+ characters, uppercase, lowercase, number, special character",
+			"buttonIn": "Login"
+		},
+		"register": {
+			"addName": "Enter name (min. 2 characters)",
+			"confirmPassword": "Passwords do not match",
+			"userRole": "User",
+			"coachRole": "Coach",
+			"buttonIn": "Register",
+			"successMessage": {
+				"title": "Thank you for registering!",
+				"message1": "To complete the process of activating your account, please check your email and follow the link in the email we sent. After that, you will be able to use all the features of our site.",
+				"message2": "If you did not receive the email, please check your 'Spam' folder. If you have any questions, do not hesitate to Contact us. Thank you!"
+			},
+			"errorMessage": {
+				"title": "Oops! Something went wrong",
+				"message1": "A registration error occurred. Please try again later",
+				"message2": "If you are unable to register on your second attempt, please contact us using the link below"
+			}
+		}
+	}
 }

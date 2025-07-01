@@ -10,8 +10,8 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
 const StyledToggleButton = styled(ToggleButton)(() => ({
 	fontSize: 8,
 	padding: 4,
-	color: '#a7b8ab',
-	backgroundColor: '#EC9704',
+	color: 'black',
+	backgroundColor: 'white',
 	width: 'fit-content',
 }))
 
@@ -23,8 +23,8 @@ const LanguageSwitcher: React.FC = () => {
 	const { changeLanguage, lang } = useTranslation()
 
 	const languages = [
-		{ code: 'UA', label: 'UA' },
-		{ code: 'EN', label: 'EN' },
+		{ code: 'ua', label: 'UA' },
+		{ code: 'en', label: 'EN' },
 	] as const
 
 	return (
