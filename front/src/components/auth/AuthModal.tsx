@@ -76,6 +76,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose, setInfoMessage }) => {
 							onClose()
 							setInfoMessage(msg)
 						}}
+						onSwitchToLogin={() => setTab('login')}
 					/>
 				)}
 			</ModalContent>

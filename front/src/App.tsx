@@ -8,7 +8,7 @@ import Footer from './components/Footer'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './context/ProtectedRoute'
 import { styled } from '@mui/material'
-import VerifyRequiredPage from './components/auth/VerifyRequiredPage '
+import VerifyPage from './pages/VerifyPage'
 
 const StyledBox = styled('div')(() => ({
 	margin: '0 auto',
@@ -37,7 +37,7 @@ const App: React.FC = () => {
 									</ProtectedRoute>
 								}
 							/>
-							<Route path='/verify-required' element={<VerifyRequiredPage />} />
+							<Route path='/verify/:token' element={<VerifyPage />} />
 						</Routes>
 
 						<Footer />

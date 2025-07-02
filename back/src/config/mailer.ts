@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
-import { emailMessages } from './i18n'
+import { emailMessages, confirmationMessages } from './i18n'
 
 dotenv.config()
 
@@ -28,12 +28,32 @@ export const sendVerificationEmail = async (
     subject: content.subject,
     html: `
       <h2>${content.title}</h2>
-      <p>Натисніть кнопку нижче, щоб підтвердити email:</p>
+      <p>${content.text}</p>
       <a href="${verifyUrl}" target="_blank" 
         style="display:inline-block;padding:10px 20px;background:#1976d2;color:#fff;text-decoration:none;border-radius:5px;">
         ${content.button}
       </a>
       <p>${content.alt}<br/>${verifyUrl}</p>
+    `,
+  })
+}
+
+export const sendConfirmationEmail = async (
+  to: string,
+  lang: 'ua' | 'en' = 'ua',
+) => {
+  const content =
+    confirmationMessages[lang] || confirmationMessages.ua
+
+  await transporter.sendMail({
+    from: '"StuntFactory" <SF@stuntfactory.com>',
+    to,
+    subject: content.subject,
+    html: `
+      <h2>${content.title}</h2>
+      <p>${content.text}</p>
+      <p>${content.footer}</p>
+      <p><a href="${process.env.CLIENT_URL}" target="_blank" style="color:#1976d2; text-decoration:none;">Перейти на головну сторінку</a></p>
     `,
   })
 }

@@ -23,3 +23,8 @@ export const registerUser = async (
 	const response = await api.post<RegisterResponse>('/auth/register', data)
 	return response.data
 }
+
+export const verifyUser = async (token: string) => {
+	const response = await api.get(`/auth/verify/${token}`)
+	return response.data
+}

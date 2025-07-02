@@ -2,7 +2,10 @@ import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 import User from '../models/User'
-import { sendVerificationEmail } from '../config/mailer'
+import {
+  sendVerificationEmail,
+  sendConfirmationEmail,
+} from '../config/mailer'
 import { apiMessages } from '../config/i18n'
 import { registerUserSchema } from '../validators/userValidator'
 
@@ -79,5 +82,56 @@ export const registerUser = async (
   } catch (error) {
     console.error('❌ Register error:', error)
     res.status(500).json({ message: t.error })
+  }
+}
+
+export const verifyUser = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  console.log('🔍 Запит на верифікацію прийшов')
+
+  const { token } = req.params
+  console.log('🔐 Отримано токен:', token)
+
+  if (!token || typeof token !== 'string') {
+    console.warn(
+      '⚠️ Токен не надано або має неправильний тип',
+    )
+    res
+      .status(400)
+      .json({ message: 'Verification token is required' })
+    return
+  }
+
+  try {
+    const user = await User.findOne({ verifyToken: token })
+    console.log('🔎 Користувач знайдений:', !!user)
+
+    if (!user) {
+      console.warn(
+        '❌ Токен недійсний або користувача не знайдено',
+      )
+      res.status(404).json({
+        message: 'Invalid or expired verification token',
+      })
+      return
+    }
+
+    user.verified = true
+    user.verifyToken = undefined
+    await user.save()
+    console.log('🔐 Користувача збережено:', user)
+
+    await sendConfirmationEmail(user.email, user.language)
+
+    res
+      .status(200)
+      .json({ message: 'Email successfully verified' })
+    return
+  } catch (err) {
+    console.error('Verification error:', err)
+    res.status(500).json({ message: 'Server error' })
+    return
   }
 }

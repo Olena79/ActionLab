@@ -29,7 +29,10 @@
 			"errorMessage": {
 				"title": "Oops! Something went wrong",
 				"message1": "A registration error occurred. Please try again later",
-				"message2": "If you are unable to register on your second attempt, please contact us using the link below"
+				"message2": "If you are unable to register on your second attempt, please contact us using the link below",
+				"emailExistsTitle": "Error!",
+				"emailExistsLine1": "The email you are using is already registered",
+				"emailExistsLine2": "Log in using the link below"
 			}
 		}
 	}

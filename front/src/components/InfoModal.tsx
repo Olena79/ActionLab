@@ -1,13 +1,6 @@
 import React from 'react'
 import { styled } from '@mui/system'
 
-interface InfoModalProps {
-	message1: string
-	message2: string
-	title: string
-	onClose: () => void
-}
-
 const Overlay = styled('div')(() => ({
 	position: 'fixed',
 	top: 0,
@@ -29,21 +22,80 @@ const ModalBox = styled('div')(() => ({
 	width: '100%',
 	textAlign: 'center',
 	boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 30,
 }))
+
+const StyledTitle = styled('h1')(() => ({
+	fontSize: 26,
+	fontWeight: 700,
+}))
+
+const StyledBtnBox = styled('div')(() => ({
+	display: 'flex',
+	justifyContent: 'center',
+}))
+
+const StyledButton = styled('button')(() => ({
+	backgroundColor: 'grey',
+	color: 'black',
+	padding: '4px 32px',
+	width: 'fit-content',
+	borderRadius: 4,
+	transition: '0.5s',
+	'&:hover': {
+		backgroundColor: 'black',
+		color: 'white',
+	},
+}))
+
+const StyledLink = styled('button')(() => ({
+	color: 'blue',
+	textDecoration: 'underline',
+	transition: '0.5s',
+	'&:hover': {
+		color: 'green',
+	},
+}))
+
+interface InfoModalProps {
+	message1: string
+	message2: string
+	title: string
+	onClose: () => void
+	action?: {
+		label: string
+		onClick: () => void
+	}
+}
 
 const InfoModal: React.FC<InfoModalProps> = ({
 	message1,
 	message2,
 	title,
 	onClose,
+	action,
 }) => {
 	return (
 		<Overlay onClick={onClose}>
-			<ModalBox onClick={(e: any) => e.stopPropagation()}>
-				<h1>{title}</h1>
+			<ModalBox onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+				<StyledTitle>{title}</StyledTitle>
 				<p>{message1}</p>
 				<p>{message2}</p>
-				<button onClick={onClose}>OK</button>
+				{action && (
+					<StyledLink
+						onClick={() => {
+							onClose()
+							action.onClick()
+						}}
+					>
+						{action.label}
+					</StyledLink>
+				)}
+				<StyledBtnBox>
+					<StyledButton onClick={onClose}>OK</StyledButton>
+				</StyledBtnBox>
 			</ModalBox>
 		</Overlay>
 	)

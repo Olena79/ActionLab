@@ -52,6 +52,10 @@ const Auth: React.FC = () => {
 		title: string
 		message1: string
 		message2: string
+		action?: {
+			label: string
+			onClick: () => void
+		}
 	} | null>(null)
 
 	const dropdownRef = useRef<HTMLDivElement>(null)
@@ -108,6 +112,17 @@ const Auth: React.FC = () => {
 					message1={infoMessage.message1}
 					message2={infoMessage.message2}
 					onClose={() => setInfoMessage(null)}
+					action={
+						infoMessage.action
+							? {
+									...infoMessage.action,
+									onClick: () => {
+										setModalOpen(true)
+										infoMessage.action!.onClick()
+									},
+							  }
+							: undefined
+					}
 				/>
 			)}
 		</>

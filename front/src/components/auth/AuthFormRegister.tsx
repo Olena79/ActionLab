@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import { styled } from '@mui/system'
 import GoogleAuthButton from './GoogleAuthButton'
 import PasswordInput from './PasswordInput'
@@ -66,10 +67,18 @@ interface AuthFormRegisterProps {
 		title: string
 		message1: string
 		message2: string
+		action?: {
+			label: string
+			onClick: () => void
+		}
 	}) => void
+	onSwitchToLogin?: () => void
 }
 
-const AuthFormRegister: React.FC<AuthFormRegisterProps> = ({ onSuccess }) => {
+const AuthFormRegister: React.FC<AuthFormRegisterProps> = ({
+	onSuccess,
+	onSwitchToLogin,
+}) => {
 	const [name, setName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
@@ -140,8 +149,26 @@ const AuthFormRegister: React.FC<AuthFormRegisterProps> = ({ onSuccess }) => {
 				message2: t('auth.register.successMessage.message2'),
 			})
 			console.log('✅ Реєстрація успішна:', response.message)
-		} catch (err) {
+		} catch (err: unknown) {
 			console.error('❌ Помилка реєстрації:', err)
+
+			if (axios.isAxiosError(err)) {
+				const status = err.response?.status
+				if (status === 409) {
+					onSuccess({
+						title: t('auth.register.errorMessage.emailExistsTitle'),
+						message1: t('auth.register.errorMessage.emailExistsLine1'),
+						message2: t('auth.register.errorMessage.emailExistsLine2'),
+						action: {
+							label: t('auth.register.loginLink'),
+							onClick: onSwitchToLogin || (() => {}),
+						},
+					})
+					return
+				}
+			}
+
+			// Всі інші помилки
 			onSuccess({
 				title: t('auth.register.errorMessage.title'),
 				message1: t('auth.register.errorMessage.message1'),

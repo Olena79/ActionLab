@@ -31,3 +31,22 @@ export const emailMessages = {
     alt: 'Or copy this link into your browser:',
   },
 }
+
+export const confirmationMessages = {
+  ua: {
+    subject: 'Ваша електронна пошта підтверджена',
+    title: 'Вітаємо!',
+    text: 'Вашу електронну пошту успішно підтверджено.',
+    footer:
+      'Тепер ви можете повністю користуватись функціоналом платформи StuntFactory.',
+    link: 'Перейти на сайт StuntFactory',
+  },
+  en: {
+    subject: 'Your email has been verified',
+    title: 'Welcome!',
+    text: 'Your email has been successfully verified.',
+    footer:
+      'You can now fully use the features of the StuntFactory platform.',
+    link: 'Go to StuntFactory website',
+  },
+}
