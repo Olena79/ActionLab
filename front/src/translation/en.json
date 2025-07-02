@@ -33,7 +33,8 @@
 				"emailExistsTitle": "Error!",
 				"emailExistsLine1": "The email you are using is already registered",
 				"emailExistsLine2": "Log in using the link below"
-			}
+			},
+			"loginLink": "Увійти"
 		}
 	}
 }
