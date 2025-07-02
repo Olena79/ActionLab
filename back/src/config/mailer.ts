@@ -23,7 +23,7 @@ export const sendVerificationEmail = async (
   const content = emailMessages[lang] || emailMessages.ua
 
   await transporter.sendMail({
-    from: '"StuntFactory" <SF@stuntfactory.com>',
+    from: process.env.SMTP_FROM,
     to,
     subject: content.subject,
     html: `
@@ -46,7 +46,7 @@ export const sendConfirmationEmail = async (
     confirmationMessages[lang] || confirmationMessages.ua
 
   await transporter.sendMail({
-    from: '"StuntFactory" <SF@stuntfactory.com>',
+    from: process.env.SMTP_FROM,
     to,
     subject: content.subject,
     html: `

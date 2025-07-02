@@ -10,6 +10,8 @@ import logger from 'morgan'
 import cors from 'cors'
 import connectDB from './config/db'
 import routes from './routes'
+import passport from 'passport'
+import './config/passport'
 
 dotenv.config()
 
@@ -37,6 +39,8 @@ app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`)
   next()
 })
+
+app.use(passport.initialize())
 
 // Підключення маршрутів
 app.use('/', routes)

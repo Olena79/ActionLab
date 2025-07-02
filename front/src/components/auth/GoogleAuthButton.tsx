@@ -13,9 +13,7 @@ const Button = styled('button')({
 
 const GoogleAuthButton: React.FC = () => {
 	const { t } = useTranslation()
-	const handleGoogleLogin = () => {
-		console.log('Login with Google (ще не реалізовано)')
-	}
+	const handleGoogleLogin = () => {}
 
 	return <Button onClick={handleGoogleLogin}>{t('auth.enterGoogle')}</Button>
 }
