@@ -9,6 +9,7 @@ import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './context/ProtectedRoute'
 import { styled } from '@mui/material'
 import VerifyPage from './pages/VerifyPage'
+import AutoLoginHandler from './components/auth/AutoLoginHandler'
 
 const StyledBox = styled('div')(() => ({
 	margin: '0 auto',
@@ -24,6 +25,7 @@ const App: React.FC = () => {
 		<AuthProvider>
 			<StyledBox>
 				<Router>
+					<AutoLoginHandler />
 					<TranslationProvider>
 						<Header />
 
@@ -37,7 +39,7 @@ const App: React.FC = () => {
 									</ProtectedRoute>
 								}
 							/>
-							<Route path='/verify/:token' element={<VerifyPage />} />
+							<Route path='/verify' element={<VerifyPage />} />
 						</Routes>
 
 						<Footer />

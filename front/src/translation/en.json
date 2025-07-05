@@ -34,7 +34,15 @@
 				"emailExistsLine1": "The email you are using is already registered",
 				"emailExistsLine2": "Log in using the link below"
 			},
-			"loginLink": "Увійти"
+			"loginLink": "Увійти",
+			"verify": {
+				"loading": "Verifying...",
+				"success": {
+					"text1": "✅ Your email has been verified! You've been automatically logged in",
+					"text2": "You'll be redirected shortly..."
+				},
+				"error": "❌ Verification error: "
+			}
 		}
 	}
 }

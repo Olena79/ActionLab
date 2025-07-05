@@ -24,9 +24,11 @@ const PORT = process.env.PORT || 5000
 
 app.use(
   cors({
-    origin: '*',
+    origin:
+      process.env.CLIENT_URL || 'http://localhost:3000',
+    credentials: true,
     methods: 'GET,POST,DELETE',
-    allowedHeaders: 'Content-Type',
+    allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 )
 app.use(logger('dev'))

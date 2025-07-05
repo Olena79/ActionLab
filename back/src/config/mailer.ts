@@ -19,7 +19,7 @@ export const sendVerificationEmail = async (
   token: string,
   lang: 'ua' | 'en' = 'ua',
 ) => {
-  const verifyUrl = `${process.env.CLIENT_URL}/verify/${token}`
+  const verifyUrl = `${process.env.CLIENT_URL}/verify?token=${token}`
   const content = emailMessages[lang] || emailMessages.ua
 
   await transporter.sendMail({

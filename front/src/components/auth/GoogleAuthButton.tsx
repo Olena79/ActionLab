@@ -13,7 +13,9 @@ const Button = styled('button')({
 
 const GoogleAuthButton: React.FC = () => {
 	const { t } = useTranslation()
-	const handleGoogleLogin = () => {}
+	const handleGoogleLogin = () => {
+		window.location.href = `${process.env.REACT_APP_SERVER_URL}/auth/google`
+	}
 
 	return <Button onClick={handleGoogleLogin}>{t('auth.enterGoogle')}</Button>
 }

@@ -4,6 +4,7 @@ import UserIcon from '../../icons/UserIcon'
 import { useTranslation } from '../../translation/TranslationContext'
 import AuthModal from './AuthModal'
 import InfoModal from '../InfoModal'
+import { useAuth } from '../../context/AuthContext'
 
 const StyledMenu = styled('div')(() => ({
 	display: 'flex',
@@ -46,6 +47,8 @@ const StyledBtnBlock = styled('button')(() => ({
 
 const Auth: React.FC = () => {
 	const { t } = useTranslation()
+	const { isAuthenticated, logout } = useAuth()
+
 	const [showAuth, setShowAuth] = useState(false)
 	const [modalOpen, setModalOpen] = useState(false)
 	const [infoMessage, setInfoMessage] = useState<{
@@ -94,9 +97,25 @@ const Auth: React.FC = () => {
 				</StyledIcon>
 				{showAuth && (
 					<StyledShowAuth ref={dropdownRef}>
-						<StyledBtnBlock onClick={() => setModalOpen(true)}>
-							{t('auth.enter')}
-						</StyledBtnBlock>
+						{isAuthenticated ? (
+							<StyledBtnBlock
+								onClick={() => {
+									logout()
+									setShowAuth(false)
+								}}
+							>
+								{t('auth.exit')}
+							</StyledBtnBlock>
+						) : (
+							<StyledBtnBlock
+								onClick={() => {
+									setModalOpen(true)
+									setShowAuth(false)
+								}}
+							>
+								{t('auth.enter')}
+							</StyledBtnBlock>
+						)}
 					</StyledShowAuth>
 				)}
 			</StyledMenu>
