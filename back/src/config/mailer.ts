@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 import { emailMessages, confirmationMessages } from './i18n'
+import { IUser } from 'models/User'
 
 dotenv.config()
 
@@ -55,5 +56,89 @@ export const sendConfirmationEmail = async (
       <p>${content.footer}</p>
       <p><a href="${process.env.CLIENT_URL}" target="_blank" style="color:#1976d2; text-decoration:none;">Перейти на головну сторінку</a></p>
     `,
+  })
+}
+
+export const sendCoachApprovalRequest = async (
+  user: IUser,
+  language: 'ua' | 'en',
+) => {
+  const approveUrl = `${process.env.SERVER_URL}/auth/approve-coach/${user.verifyToken}`
+  const rejectUrl = `${process.env.SERVER_URL}/auth/reject-coach/${user.verifyToken}`
+
+  const subject =
+    language === 'ua'
+      ? 'Новий запит на реєстрацію тренера'
+      : 'New Coach Registration Request'
+  const html = `
+    <p>${user.name} (${user.email}) хоче стати тренером.</p>
+    <p>
+      <a href="${approveUrl}">✅ Підтвердити</a> |
+      <a href="${rejectUrl}">❌ Скасувати</a>
+    </p>
+  `
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: process.env.ADMIN_EMAIL,
+    subject,
+    html,
+  })
+}
+
+export const sendErrorNotificationToAdmin = async (
+  subject: string,
+  error: Error | string,
+  context?: string,
+) => {
+  const html = `
+    <h2>❌ Помилка на сервері</h2>
+    ${
+      context
+        ? `<p><strong>Контекст:</strong> ${context}</p>`
+        : ''
+    }
+    <p><strong>Повідомлення:</strong> ${
+      typeof error === 'string' ? error : error.message
+    }</p>
+    <pre>${
+      typeof error === 'string' ? '' : error.stack
+    }</pre>
+  `
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: process.env.ADMIN_EMAIL,
+    subject,
+    html,
+  })
+}
+
+export const sendRejectionCoachEmail = async (
+  email: string,
+  language: 'ua' | 'en',
+) => {
+  const subject =
+    language === 'ua'
+      ? 'Відмова у реєстрації як тренера'
+      : 'Coach Registration Rejected'
+
+  const html =
+    language === 'ua'
+      ? `
+        <p>Дякуємо за спробу зареєструватися як тренер.</p>
+        <p>На жаль, ваш запит було відхилено.</p>
+        <p>Ваш обліковий запис видалено, однак ви можете <a href="${process.env.CLIENT_URL}/register">зареєструватися знову</a> як звичайний користувач.</p>
+      `
+      : `
+        <p>Thank you for applying to become a coach.</p>
+        <p>Unfortunately, your request has been rejected.</p>
+        <p>Your account has been deleted, but you can <a href="${process.env.CLIENT_URL}/register">register again</a> as a regular user.</p>
+      `
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: email,
+    subject,
+    html,
   })
 }

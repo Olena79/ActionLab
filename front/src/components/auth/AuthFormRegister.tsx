@@ -143,11 +143,19 @@ const AuthFormRegister: React.FC<AuthFormRegisterProps> = ({
 				role,
 				language: normalizedLang,
 			})
-			onSuccess({
-				title: t('auth.register.successMessage.title'),
-				message1: t('auth.register.successMessage.message1'),
-				message2: t('auth.register.successMessage.message2'),
-			})
+			if (role === 'coach') {
+				onSuccess({
+					title: t('auth.register.successCoach.title'),
+					message1: t('auth.register.successCoach.message1'),
+					message2: t('auth.register.successCoach.message2'),
+				})
+			} else {
+				onSuccess({
+					title: t('auth.register.successMessage.title'),
+					message1: t('auth.register.successMessage.message1'),
+					message2: t('auth.register.successMessage.message2'),
+				})
+			}
 			console.log('✅ Реєстрація успішна:', response.message)
 		} catch (err: unknown) {
 			console.error('❌ Помилка реєстрації:', err)

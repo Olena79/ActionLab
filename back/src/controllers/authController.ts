@@ -6,6 +6,9 @@ import User from '../models/User'
 import {
   sendVerificationEmail,
   sendConfirmationEmail,
+  sendCoachApprovalRequest,
+  sendErrorNotificationToAdmin,
+  sendRejectionCoachEmail,
 } from '../config/mailer'
 import { apiMessages } from '../config/i18n'
 import { registerUserSchema } from '../validators/userValidator'
@@ -63,7 +66,19 @@ export const registerUser = async (
   )
   newUser.refreshToken = refreshToken
   await newUser.save()
-  await sendVerificationEmail(email, verifyToken, language)
+
+  if (role === 'coach') {
+    // якщо тренер — лист адміну для підтвердження
+    await sendCoachApprovalRequest(newUser, language)
+  } else {
+    // звичайний користувач — надсилаємо верифікацію
+    await sendVerificationEmail(
+      email,
+      verifyToken,
+      language,
+    )
+  }
+
   res.status(201).json({
     message: t.success,
     user: newUser,
@@ -98,12 +113,6 @@ export const verifyUser = async (
   const uid = user._id.toString()
   const accessToken = generateJwtToken(uid)
   const refreshToken = generateRefreshToken(uid)
-
-  console.log('accessToken from verifyUser: ', accessToken)
-  console.log(
-    'refreshToken from verifyUser: ',
-    refreshToken,
-  )
 
   // save refreshToken on user
   user.refreshToken = refreshToken
@@ -171,5 +180,208 @@ export const refreshToken = async (
       .status(403)
       .json({ message: 'Invalid or expired refresh token' })
     return
+  }
+}
+
+export const loginUser = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const { email, password } = req.body
+
+  try {
+    const user = await User.findOne({ email }).select(
+      '+password',
+    )
+    // Якщо користувача не знайдено
+    if (!user) {
+      res.status(404).json({ message: 'User not found' })
+      return
+    }
+
+    // Перевірка паролю
+    if (!user.password) {
+      res.status(400).json({
+        message: 'User has no password',
+      })
+      return
+    }
+    const isMatch = await bcrypt.compare(
+      password,
+      user.password,
+    )
+    if (!isMatch) {
+      res
+        .status(401)
+        .json({ message: 'Invalid credentials' })
+      return
+    }
+
+    // Перевірка верифікації
+    if (!user.verified) {
+      res
+        .status(403)
+        .json({ message: 'User is not verify' })
+      return
+    }
+
+    // Генерація токенів
+    const uid = user._id.toString()
+    const accessToken = generateJwtToken(uid)
+    const refreshToken = generateRefreshToken(uid)
+
+    user.refreshToken = refreshToken
+    await user.save()
+
+    res.status(200).json({
+      user: {
+        userId: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        verified: user.verified,
+      },
+      accessToken,
+      refreshToken,
+    })
+  } catch (err) {
+    console.error('❌ Login error:', err)
+    res
+      .status(500)
+      .json({ message: 'Server error, try again later' })
+  }
+}
+
+export const approveCoach = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const token = req.params.token
+    const user = await User.findOne({ verifyToken: token })
+    console.log(
+      'Токен і юзер з approveCoach: ',
+      token,
+      user,
+    )
+
+    if (!user || user.role !== 'coach') {
+      res.status(404).send(`
+        <html>
+          <body style="text-align: center; padding: 50px;">
+            <h1>❌ Помилка</h1>
+            <p>Тренера не знайдено або токен недійсний.</p>
+          </body>
+        </html>
+      `)
+      return
+    }
+
+    // Перевірка, чи тренер уже підтверджений
+    if (user.verified) {
+      res.send(`
+        <html>
+          <body style="text-align: center; padding: 50px;">
+            <h1>ℹ️ Тренер вже підтверджений</h1>
+            <p>Цей тренер вже має активний статус і може увійти.</p>
+          </body>
+        </html>
+      `)
+      return
+    }
+
+    user.verified = true
+    user.verifyToken = undefined
+    user.refreshToken = generateRefreshToken(
+      user._id.toString(),
+    )
+    await user.save()
+    const freshUser = await User.findById(user._id)
+    console.log(
+      '🧾 User after save:',
+      freshUser?.toObject(),
+    )
+
+    // email them a “confirmation” message
+    if (freshUser) {
+      await sendConfirmationEmail(
+        freshUser.email,
+        freshUser.language,
+      )
+    }
+
+    res.redirect(
+      `${process.env.CLIENT_URL}/success-coach-approved`,
+    )
+  } catch (error: any) {
+    console.error('❌ approveCoach error:', error)
+    await sendErrorNotificationToAdmin(
+      '❌ Помилка при підтвердженні тренера',
+      error,
+      'Контролер: approveCoach',
+    )
+    res.status(500).send(`
+    <html>
+      <body style="text-align: center; padding: 50px;">
+        <h1>⚠️ Сталася помилка</h1>
+        <p>Будь ласка, спробуйте пізніше.</p>
+      </body>
+    </html>
+  `)
+  }
+}
+
+export const rejectCoach = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const token = req.params.token
+    const user = await User.findOne({ verifyToken: token })
+
+    // Перевірка, чи тренер уже підтверджений
+    if (!user?.verifyToken) {
+      res.send(`
+        <html>
+          <body style="text-align: center; padding: 50px;">
+            <h1>ℹ️ Тренер вже видалений</h1>
+          </body>
+        </html>
+      `)
+      return
+    }
+
+    if (!user || user.role !== 'coach') {
+      res.status(404).send(`
+        <html>
+          <body style="text-align: center; padding: 50px;">
+            <h1>❌ Помилка</h1>
+            <p>Тренера не знайдено або токен недійсний.</p>
+          </body>
+        </html>
+      `)
+      return
+    }
+
+    await User.deleteOne({ _id: user._id })
+
+    await sendRejectionCoachEmail(user.email, user.language)
+
+    res.redirect(`${process.env.CLIENT_URL}/reject-coach`)
+  } catch (error: any) {
+    console.error('❌ approveCoach error:', error)
+    await sendErrorNotificationToAdmin(
+      '❌ Помилка при видаленні тренера',
+      error,
+      'Контролер: rejectCoach',
+    )
+    res.status(500).send(`
+  <html>
+    <body style="text-align: center; padding: 50px;">
+      <h1>⚠️ Сталася помилка</h1>
+      <p>Будь ласка, спробуйте пізніше.</p>
+    </body>
+  </html>
+`)
   }
 }

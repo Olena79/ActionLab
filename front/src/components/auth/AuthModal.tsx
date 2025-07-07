@@ -48,10 +48,15 @@ interface AuthModalProps {
 		message1: string
 		message2: string
 	}) => void
+	initialTab?: 'login' | 'register'
 }
 
-const AuthModal: React.FC<AuthModalProps> = ({ onClose, setInfoMessage }) => {
-	const [tab, setTab] = useState<'login' | 'register'>('login')
+const AuthModal: React.FC<AuthModalProps> = ({
+	onClose,
+	setInfoMessage,
+	initialTab = 'login',
+}) => {
+	const [tab, setTab] = useState<'login' | 'register'>(initialTab)
 	const { t } = useTranslation()
 
 	return (
@@ -69,7 +74,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose, setInfoMessage }) => {
 					</TabButton>
 				</TabHeader>
 				{tab === 'login' ? (
-					<AuthFormLogin />
+					<AuthFormLogin onSuccess={onClose} />
 				) : (
 					<AuthFormRegister
 						onSuccess={msg => {

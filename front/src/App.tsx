@@ -10,6 +10,9 @@ import ProtectedRoute from './context/ProtectedRoute'
 import { styled } from '@mui/material'
 import VerifyPage from './pages/VerifyPage'
 import AutoLoginHandler from './components/auth/AutoLoginHandler'
+import SuccessCoachApproved from './pages/SuccessCoachApproved'
+import RejectCoach from './pages/RejectCoach'
+import RegisterPage from './pages/RegisterPage'
 
 const StyledBox = styled('div')(() => ({
 	margin: '0 auto',
@@ -31,6 +34,7 @@ const App: React.FC = () => {
 
 						<Routes>
 							<Route path='/' element={<MainPage />} />
+
 							<Route
 								path='/calendar'
 								element={
@@ -39,7 +43,17 @@ const App: React.FC = () => {
 									</ProtectedRoute>
 								}
 							/>
+
 							<Route path='/verify' element={<VerifyPage />} />
+
+							<Route
+								path='/success-coach-approved'
+								element={<SuccessCoachApproved />}
+							/>
+
+							<Route path='/reject-coach' element={<RejectCoach />} />
+
+							<Route path='/register' element={<RegisterPage />} />
 						</Routes>
 
 						<Footer />

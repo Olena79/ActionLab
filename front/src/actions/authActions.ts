@@ -85,3 +85,11 @@ export const loginWithRefreshToken = async (
 		refreshToken: data.refreshToken,
 	}
 }
+
+export const loginUser = async (email: string, password: string) => {
+	const response = await axios.post(
+		`${process.env.REACT_APP_SERVER_URL}/auth/login`,
+		{ email, password }
+	)
+	return response.data // очікуємо: { user, accessToken, refreshToken }
+}

@@ -3,7 +3,10 @@ import { styled } from '@mui/system'
 import GoogleAuthButton from './GoogleAuthButton'
 import PasswordInput from './PasswordInput'
 import { useTranslation } from '../../translation/TranslationContext'
-
+import { loginUser } from '../../actions/authActions'
+import { useAuth } from '../../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import InfoModal from '../InfoModal'
 const Form = styled('form')({
 	display: 'flex',
 	flexDirection: 'column',
@@ -55,7 +58,11 @@ const isPasswordValid = (password: string): boolean => {
 
 const isEmailValid = (email: string): boolean => /\S+@\S+\.\S+/.test(email)
 
-const AuthFormLogin: React.FC = () => {
+interface AuthFormLoginProps {
+	onSuccess?: () => void
+}
+
+const AuthFormLogin: React.FC<AuthFormLoginProps> = ({ onSuccess }) => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [errors, setErrors] = useState<{ email?: string; password?: string }>(
@@ -68,7 +75,19 @@ const AuthFormLogin: React.FC = () => {
 		email: false,
 		password: false,
 	})
+	const [modal, setModal] = useState<{
+		title: string
+		message1: string
+		message2: string
+		action?: {
+			label: string
+			onClick: () => void
+		}
+	} | null>(null)
+
 	const { t } = useTranslation()
+	const { login, setTokens } = useAuth()
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		const newErrors: typeof errors = {}
@@ -88,38 +107,97 @@ const AuthFormLogin: React.FC = () => {
 
 	const isFormValid = !!email && !!password && Object.keys(errors).length === 0
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		if (!isFormValid) return
-		console.log('Login with:', { email, password })
+		try {
+			console.log('📨 Login with:', { email, password })
+			const { user, accessToken, refreshToken } = await loginUser(
+				email,
+				password
+			)
+
+			setTokens(accessToken, refreshToken)
+			login(user)
+			onSuccess?.()
+			navigate('/')
+		} catch (err: any) {
+			console.error('❌ Login failed:', err)
+
+			const errorMessage = err.response?.data?.message || 'Unknown error'
+
+			if (errorMessage === 'User not found') {
+				setModal({
+					title: t('auth.errorsLogin.userNotFound.title'),
+					message1: t('auth.errorsLogin.userNotFound.message1'),
+					message2: t('auth.errorsLogin.userNotFound.message2'),
+				})
+			} else if (errorMessage === 'User has no password') {
+				setModal({
+					title: t('auth.errorsLogin.userHasNoPassword.title'),
+					message1: t('auth.errorsLogin.userHasNoPassword.message1'),
+					message2: t('auth.errorsLogin.userHasNoPassword.message2'),
+				})
+			} else if (errorMessage === 'Invalid credentials') {
+				setModal({
+					title: t('auth.errorsLogin.wrongPassword.title'),
+					message1: t('auth.errorsLogin.wrongPassword.message1'),
+					message2: t('auth.errorsLogin.wrongPassword.message2'),
+				})
+			} else if (errorMessage === 'User is not verify') {
+				setModal({
+					title: t('auth.errorsLogin.notVerify.title'),
+					message1: t('auth.errorsLogin.notVerify.message1'),
+					message2: t('auth.errorsLogin.notVerify.message2'),
+				})
+			} else {
+				setModal({
+					title: t('auth.errorsLogin.error.title'),
+					message1: t('auth.errorsLogin.error.message1'),
+					message2: t('auth.errorsLogin.error.message2'),
+				})
+			}
+		}
 	}
 
 	return (
-		<Form onSubmit={handleSubmit}>
-			<GoogleAuthButton />
-			<InputBlock>
-				<Input
-					type='text'
-					placeholder='Email'
-					value={email}
-					onChange={e => setEmail(e.target.value)}
-					onFocus={() => setIsTouched(prev => ({ ...prev, email: true }))}
+		<>
+			<Form onSubmit={handleSubmit}>
+				<GoogleAuthButton />
+				<InputBlock>
+					<Input
+						type='text'
+						placeholder='Email'
+						value={email}
+						onChange={e => setEmail(e.target.value)}
+						onFocus={() => setIsTouched(prev => ({ ...prev, email: true }))}
+					/>
+					<Error>{errors.email || ''}</Error>
+				</InputBlock>
+				<InputBlock>
+					<PasswordInput
+						placeholder='Password'
+						value={password}
+						onChange={e => setPassword(e.target.value)}
+						onFocus={() => setIsTouched(prev => ({ ...prev, password: true }))}
+						error={errors.password}
+					/>
+				</InputBlock>
+				<SubmitButton type='submit' disabled={!isFormValid}>
+					{t('auth.login.buttonIn')}
+				</SubmitButton>
+			</Form>
+			{modal && (
+				<InfoModal
+					title={modal.title}
+					message1={modal.message1}
+					message2={modal.message2}
+					onClose={() => setModal(null)}
+					action={modal.action}
+					labelOk={'labelOk'}
 				/>
-				<Error>{errors.email || ''}</Error>
-			</InputBlock>
-			<InputBlock>
-				<PasswordInput
-					placeholder='Password'
-					value={password}
-					onChange={e => setPassword(e.target.value)}
-					onFocus={() => setIsTouched(prev => ({ ...prev, password: true }))}
-					error={errors.password}
-				/>
-			</InputBlock>
-			<SubmitButton type='submit' disabled={!isFormValid}>
-				{t('auth.login.buttonIn')}
-			</SubmitButton>
-		</Form>
+			)}
+		</>
 	)
 }
 

@@ -34,7 +34,7 @@
 				"emailExistsLine1": "The email you are using is already registered",
 				"emailExistsLine2": "Log in using the link below"
 			},
-			"loginLink": "Увійти",
+			"loginLink": "Log in",
 			"verify": {
 				"loading": "Verifying...",
 				"success": {
@@ -42,7 +42,47 @@
 					"text2": "You'll be redirected shortly..."
 				},
 				"error": "❌ Verification error: "
+			},
+			"successCoach": {
+				"title": "Coach Registration",
+				"message1": "Your registration request has been sent to the administrator. You will receive an email once it’s approved.",
+				"message2": "If you registered as a coach by mistake, your account will be removed by the administrator after a short time, and you’ll be able to sign up as a regular user."
 			}
+		},
+		"errorsLogin": {
+			"userNotFound": {
+				"title": "User Not Found",
+				"message1": "No account is registered with this email address.",
+				"message2": "Please check the email or sign up for a new account.",
+				"actionsLabel": "Sign Up"
+			},
+			"userHasNoPassword": {
+				"title": "Login Error",
+				"message1": "This account was created using Google Sign-In.",
+				"message2": "Please log in using Google."
+			},
+			"wrongPassword": {
+				"title": "Incorrect Password",
+				"message1": "The password you entered is incorrect.",
+				"message2": "Please try again."
+			},
+			"notVerify": {
+				"title": "Email Not Verified",
+				"message1": "A verification link has been sent to your email.",
+				"message2": "If you're having trouble, please contact us."
+			},
+			"error": {
+				"title": "Login Error",
+				"message1": "An unexpected error occurred.",
+				"message2": "Please try again later."
+			}
+		},
+		"logout": {
+			"title": "Logout?",
+			"message1": "Are you sure you want to log out?",
+			"message2": "All unsaved data will be lost!",
+			"exit": "Exit",
+			"doNotExit": "Stay"
 		}
 	}
 }

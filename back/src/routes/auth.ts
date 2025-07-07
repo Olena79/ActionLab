@@ -1,8 +1,11 @@
 import { Router, Request, Response } from 'express'
 import passport from 'passport'
 import {
+  approveCoach,
+  loginUser,
   refreshToken,
   registerUser,
+  rejectCoach,
   verifyUser,
 } from '../controllers/authController'
 import { authenticateJWT } from '../middleware'
@@ -70,5 +73,10 @@ router.get(
 )
 
 router.post('/token', refreshToken)
+
+router.post('/login', loginUser)
+
+router.get('/approve-coach/:token', approveCoach)
+router.get('/reject-coach/:token', rejectCoach)
 
 export default router

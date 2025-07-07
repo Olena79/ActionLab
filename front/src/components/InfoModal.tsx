@@ -34,7 +34,7 @@ const StyledTitle = styled('h1')(() => ({
 
 const StyledBtnBox = styled('div')(() => ({
 	display: 'flex',
-	justifyContent: 'center',
+	justifyContent: 'space-around',
 }))
 
 const StyledButton = styled('button')(() => ({
@@ -68,6 +68,11 @@ interface InfoModalProps {
 		label: string
 		onClick: () => void
 	}
+	action2?: {
+		label: string
+		onClick: () => void
+	}
+	labelOk: string
 }
 
 const InfoModal: React.FC<InfoModalProps> = ({
@@ -76,6 +81,8 @@ const InfoModal: React.FC<InfoModalProps> = ({
 	title,
 	onClose,
 	action,
+	action2,
+	labelOk,
 }) => {
 	return (
 		<Overlay onClick={onClose}>
@@ -94,7 +101,17 @@ const InfoModal: React.FC<InfoModalProps> = ({
 					</StyledLink>
 				)}
 				<StyledBtnBox>
-					<StyledButton onClick={onClose}>OK</StyledButton>
+					{action2 && (
+						<StyledButton
+							onClick={() => {
+								action2.onClick()
+								onClose()
+							}}
+						>
+							{action2.label}
+						</StyledButton>
+					)}
+					<StyledButton onClick={onClose}>{labelOk}</StyledButton>
 				</StyledBtnBox>
 			</ModalBox>
 		</Overlay>
