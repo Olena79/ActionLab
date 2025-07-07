@@ -32,6 +32,7 @@ interface AuthContextType {
 	) => void
 	logout: () => void
 	setTokens: (accessToken: string, refreshToken?: string) => void
+	loading: boolean
 }
 
 // Початкове значення контексту
@@ -43,6 +44,7 @@ const AuthContext = createContext<AuthContextType>({
 	login: () => {},
 	logout: () => {},
 	setTokens: () => {},
+	loading: true,
 })
 
 // Провайдер
@@ -50,6 +52,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 	children,
 }) => {
 	const [user, setUser] = useState<AuthUser | null>(null)
+	const [loading, setLoading] = useState(true)
 	const [accessToken, setAccessToken] = useState<string | null>(null)
 	const [refreshToken, setRefreshToken] = useState<string | null>(null)
 
@@ -68,6 +71,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 		if (storedRefreshToken) {
 			setRefreshToken(storedRefreshToken)
 		}
+		setLoading(false)
 	}, [])
 
 	const login = (
@@ -114,6 +118,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 		login,
 		logout,
 		setTokens,
+		loading,
 	}
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

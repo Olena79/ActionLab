@@ -7,14 +7,16 @@ interface Props {
 }
 
 const ProtectedRoute: React.FC<Props> = ({ children }) => {
-	const { isAuthenticated, user } = useAuth()
+	const { isAuthenticated, user, loading } = useAuth()
+
+	if (loading) return null
 
 	if (!isAuthenticated) {
 		return <Navigate to='/' replace />
 	}
 
 	if (!user?.verified) {
-		return <Navigate to='/verify-required' replace />
+		return <Navigate to='/' replace />
 	}
 
 	return children
