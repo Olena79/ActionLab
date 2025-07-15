@@ -47,7 +47,7 @@ const Header: React.FC = () => {
 		<StyledHeader>
 			<StyledTitle href='/'>Logo</StyledTitle>
 			<StyledMenu>
-				<StyledLink href='/calendar'>{t('header.calendar')}</StyledLink>
+				<StyledLink href='/my-calendar'>{t('header.calendar')}</StyledLink>
 				<Auth />
 				<LanguageSwitcher />
 			</StyledMenu>

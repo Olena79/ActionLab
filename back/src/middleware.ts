@@ -12,8 +12,12 @@ declare global {
 const JWT_SECRET =
   process.env.JWT_SECRET || 'some_secret_key'
 
+export interface AuthenticatedRequest extends Request {
+  userId?: string
+}
+
 export const authenticateJWT = (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
 ): void => {

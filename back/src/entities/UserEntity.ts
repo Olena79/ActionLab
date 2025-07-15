@@ -1,5 +1,3 @@
-// src/entities/UserEntity.ts
-
 export type Role = 'user' | 'coach' | 'admin'
 export type Language = 'ua' | 'en'
 

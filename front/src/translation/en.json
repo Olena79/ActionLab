@@ -1,7 +1,7 @@
 {
 	"hello": "Main page",
 	"header": {
-		"calendar": "Сalendar"
+		"calendar": "Personal calendar"
 	},
 	"auth": {
 		"enter": "Enter",
@@ -84,5 +84,36 @@
 			"exit": "Exit",
 			"doNotExit": "Stay"
 		}
+	},
+	"ownCalendar": {
+		"title": "My calendar",
+		"days": {
+			"mon": "Mon",
+			"tue": "Tues",
+			"wed": "Wed",
+			"thu": "Thu",
+			"fri": "Fri",
+			"sat": "Sat",
+			"sun": "Sun"
+		},
+		"adminAddEvent": {
+			"addEvent": "Add Event",
+			"eventDay": "Event Date:",
+			"eventType": "Event Type:",
+			"chooseEvent": "Choose",
+			"training": "Training",
+			"workshop": "Workshop",
+			"holiday": "Holiday",
+			"eventName": "Event Name:",
+			"eventDesc": "Description:",
+			"cancel": "Cancel",
+			"add": "Create"
+		}
+	},
+	"protectedRoutInfo": {
+		"title": "Access Denied",
+		"message1": "You must be a registered and verified user",
+		"message2": "Register and verify your email to access your personal calendar.",
+		"labelOk": "Back to the main page"
 	}
 }

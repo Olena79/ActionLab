@@ -36,7 +36,7 @@ const App: React.FC = () => {
 							<Route path='/' element={<MainPage />} />
 
 							<Route
-								path='/calendar'
+								path='/my-calendar'
 								element={
 									<ProtectedRoute>
 										<CalendarPage />
