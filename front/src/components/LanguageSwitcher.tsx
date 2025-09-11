@@ -1,50 +1,42 @@
 import React from 'react'
-import { useTranslation } from './../translation/TranslationContext'
-import { Box, ToggleButton, ToggleButtonGroup } from '@mui/material'
-import { styled } from '@mui/system'
-
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
-	paddingRight: 10,
-}))
-
-const StyledToggleButton = styled(ToggleButton)(() => ({
-	fontSize: 8,
-	padding: 4,
-	color: 'black',
-	backgroundColor: 'white',
-	width: 'fit-content',
-}))
-
-const Text = styled('span')(() => ({
-	color: '#583E26',
-}))
+import {
+	LanguageCode,
+	useTranslation,
+} from './../translation/TranslationContext'
+import { Box, MenuItem, Select, SelectChangeEvent, styled } from '@mui/material'
 
 const LanguageSwitcher: React.FC = () => {
-	const { changeLanguage, lang } = useTranslation()
+	const { t, changeLanguage, lang } = useTranslation()
 
-	const languages = [
-		{ code: 'ua', label: 'UA' },
-		{ code: 'en', label: 'EN' },
-	] as const
+	const handleChange = (event: SelectChangeEvent<LanguageCode>) => {
+		const newLang = event.target.value as LanguageCode
+		changeLanguage(newLang)
+	}
 
 	return (
-		<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-			<StyledToggleButtonGroup
+		<StyledBox>
+			<Select
 				value={lang}
-				exclusive
-				onChange={(_, newLang) => newLang && changeLanguage(newLang)}
-				aria-label='language switcher'
+				onChange={handleChange}
+				color='primary'
+				variant='standard'
+				sx={{ ml: 1 }}
 			>
-				{languages.map(({ code, label }) => (
-					<StyledToggleButton key={code} value={code} aria-label={label}>
-						<Text>{label}</Text>
-					</StyledToggleButton>
-				))}
-			</StyledToggleButtonGroup>
-		</Box>
+				<MenuItem value='ua'>{t('ua')}</MenuItem>
+				<MenuItem value='en'>{t('en')}</MenuItem>
+			</Select>
+		</StyledBox>
 	)
 }
 
 export default LanguageSwitcher
 
 //========================================
+const StyledBox = styled(Box)(({ theme }) => ({
+	display: 'flex',
+	justifyContent: 'center',
+	padding: '6px 12px',
+	margin: '0 24px',
+	backgroundColor: theme.palette.secondary.main,
+	borderRadius: 24,
+}))

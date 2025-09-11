@@ -3,63 +3,48 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { TranslationProvider } from './translation/TranslationContext'
 import MainPage from './pages/MainPage'
 import Header from './components/Header'
-import CalendarPage from './pages/CalendarPage'
 import Footer from './components/Footer'
 import { AuthProvider } from './context/AuthContext'
-import ProtectedRoute from './context/ProtectedRoute'
 import { styled } from '@mui/material'
 import VerifyPage from './pages/VerifyPage'
-import AutoLoginHandler from './components/auth/AutoLoginHandler'
-import SuccessCoachApproved from './pages/SuccessCoachApproved'
-import RejectCoach from './pages/RejectCoach'
 import RegisterPage from './pages/RegisterPage'
 
-const StyledBox = styled('div')(() => ({
+const MainBox = styled('div')(({ theme }) => ({
+	backgroundColor: theme.palette.primary.main,
+}))
+
+const StyledBox = styled('div')(({ theme }) => ({
 	margin: '0 auto',
 	maxWidth: '1100px',
 	display: 'flex',
 	flexDirection: 'column',
 	alignItems: 'center',
-	minHeight: '300vh',
+	minHeight: '100vh',
+	backgroundColor: theme.palette.background.default,
 }))
 
 const App: React.FC = () => {
 	return (
 		<AuthProvider>
-			<StyledBox>
-				<Router>
-					<AutoLoginHandler />
-					<TranslationProvider>
-						<Header />
+			<MainBox>
+				<StyledBox>
+					<Router>
+						<TranslationProvider>
+							<Header />
 
-						<Routes>
-							<Route path='/' element={<MainPage />} />
+							<Routes>
+								<Route path='/' element={<MainPage />} />
 
-							<Route
-								path='/my-calendar'
-								element={
-									<ProtectedRoute>
-										<CalendarPage />
-									</ProtectedRoute>
-								}
-							/>
+								<Route path='/verify' element={<VerifyPage />} />
 
-							<Route path='/verify' element={<VerifyPage />} />
+								<Route path='/register' element={<RegisterPage />} />
+							</Routes>
 
-							<Route
-								path='/success-coach-approved'
-								element={<SuccessCoachApproved />}
-							/>
-
-							<Route path='/reject-coach' element={<RejectCoach />} />
-
-							<Route path='/register' element={<RegisterPage />} />
-						</Routes>
-
-						<Footer />
-					</TranslationProvider>
-				</Router>
-			</StyledBox>
+							<Footer />
+						</TranslationProvider>
+					</Router>
+				</StyledBox>
+			</MainBox>
 		</AuthProvider>
 	)
 }

@@ -3,13 +3,13 @@ import { styled } from '@mui/material'
 
 const StyledFooter = styled('footer')(() => ({
 	width: '100%',
-	margin: '30px auto 0 auto',
+	marginTop: 30,
 	padding: 30,
 	borderTop: '5px solid black',
 }))
 
 const StyledText = styled('p')(() => ({
-	fontSize: 200,
+	fontSize: 30,
 	textAlign: 'center',
 }))
 

@@ -3,7 +3,7 @@ import ua from './ua.json'
 import en from './en.json'
 
 // Типи мов та контексту
-type LanguageCode = 'ua' | 'en'
+export type LanguageCode = 'ua' | 'en'
 
 interface TranslationContextType {
 	lang: LanguageCode
