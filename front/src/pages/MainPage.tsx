@@ -1,26 +1,23 @@
 import React from 'react'
-import { useTranslation } from '../translation/TranslationContext'
 import { styled } from '@mui/system'
-import { DialogTitle } from '@mui/material'
+import FloatingButton from '../components/FloatingButton'
+import AnimatedTexts from '../components/AnimatedTexts'
 
 const StyledPage = styled('div')(() => ({
 	display: 'flex',
 	flexDirection: 'column',
 	alignItems: 'center',
 	minHeight: '70vh',
-}))
-
-const StyledTitle = styled(DialogTitle)(() => ({
-	fontSize: '80px',
-	fontWeight: 'bold',
+	position: 'relative',
+	width: '100%',
 }))
 
 const MainPage: React.FC = () => {
-	const { t } = useTranslation()
-
 	return (
 		<StyledPage>
-			<StyledTitle>{t('hello')}</StyledTitle>
+			<FloatingButton />
+
+			<AnimatedTexts />
 		</StyledPage>
 	)
 }

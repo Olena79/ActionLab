@@ -1,40 +1,39 @@
-import mongoose, { Document, Schema, Types } from 'mongoose'
+import { Document, model, Schema, Types } from 'mongoose'
 
-export type Role = 'user' | 'coach' | 'admin'
 export type Language = 'ua' | 'en'
+
+export interface IUserSeminar {
+  _id?: Types.ObjectId
+  title: string
+  description?: string
+  date: Date
+  isPaid: boolean
+}
 
 export interface IUser extends Document {
   _id: Types.ObjectId
-  name: string
+  firstName: string
+  lastName: string
+  phone: string
   email: string
-  password?: string
-  role: Role
-  verified: boolean
-  verifyToken?: string
-  refreshToken?: string
-  language: Language
+  seminars: IUserSeminar[]
+  language: string
 }
 
-const userSchema = new Schema<IUser>(
-  {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: false },
-    role: {
-      type: String,
-      enum: ['user', 'coach', 'admin'],
-      default: 'user',
-    },
-    verified: { type: Boolean, default: false },
-    verifyToken: { type: String },
-    refreshToken: { type: String, required: false },
-    language: {
-      type: String,
-      enum: ['ua', 'en'],
-      default: 'ua',
-    },
-  },
-  { timestamps: true, collection: 'users' },
-)
+const UserSeminarSchema = new Schema<IUserSeminar>({
+  title: { type: String, required: true },
+  description: { type: String },
+  date: { type: Date, required: true },
+  isPaid: { type: Boolean, default: false },
+})
 
-export default mongoose.model<IUser>('User', userSchema)
+const UserSchema = new Schema<IUser>({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  phone: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  seminars: { type: [UserSeminarSchema], default: [] },
+  language: { type: String, default: 'ua' },
+})
+
+export const UserModel = model<IUser>('User', UserSchema)

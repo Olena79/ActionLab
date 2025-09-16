@@ -1,29 +1,20 @@
-import { z } from 'zod'
+import { body } from 'express-validator'
 
-export const registerUserSchema = z.object({
-  name: z
-    .string({ required_error: 'Імʼя обовʼязкове' })
-    .min(2, 'Імʼя має містити мінімум 2 символи'),
-
-  email: z
-    .string({ required_error: 'Email обовʼязковий' })
-    .email('Невалідний email'),
-
-  password: z
-    .string({ required_error: 'Пароль обовʼязковий' })
-    .min(8, 'Пароль має містити щонайменше 8 символів')
-    .regex(/[A-Z]/, 'Пароль має містити велику літеру')
-    .regex(/[a-z]/, 'Пароль має містити малу літеру')
-    .regex(/[0-9]/, 'Пароль має містити цифру')
-    .regex(
-      /[!@#$%^&*(),.?":{}|<>]/,
-      'Пароль має містити спецсимвол',
-    ),
-
-  role: z.enum(['user', 'coach'], {
-    required_error: 'Роль обовʼязкова',
-    invalid_type_error: 'Невірна роль',
-  }),
-
-  language: z.enum(['ua', 'en']).default('ua'),
-})
+export const registerUserValidator = [
+  body('firstName')
+    .trim()
+    .isLength({ min: 2 })
+    .withMessage('First name too short'),
+  body('lastName')
+    .trim()
+    .isLength({ min: 2 })
+    .withMessage('Last name too short'),
+  body('phone')
+    .trim()
+    .matches(/^[0-9+\-\s]{7,}$/)
+    .withMessage('Invalid phone'),
+  body('email').isEmail().withMessage('Invalid email'),
+  body('seminar')
+    .notEmpty()
+    .withMessage('Seminar is required'),
+]

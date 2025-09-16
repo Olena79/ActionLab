@@ -8,7 +8,7 @@ const connectDB = async () => {
     const conn = await mongoose.connect(
       process.env.MONGO_URI as string,
       {
-        dbName: 'stuntfactory',
+        dbName: 'ActionLab',
       },
     )
     console.log('MONGO_URI:', process.env.MONGO_URI)

@@ -1,4 +1,83 @@
 {
 	"hello": "Main page",
-	"labelOk": "OK"
+	"labelOk": "OK",
+	"join": "Join",
+
+	"mainTitle": "In the world, where reality blurs between the screen and the day,",
+	"mainTitle2": "for now we'll help you:",
+
+	"mainDesc01": "volodyment",
+	"mainDesc02": "space",
+	"mainDesc03": "with powerful fear",
+
+	"mainSubDesc1": "We don't just fight - we understand, not just fight - but trust in the wind, not just fall - but fall beautifully and with an idea.",
+	"mainSubDesc2": "We don't prepare the body, we prepare the spirit.",
+
+	"missionTitle": "Our mission",
+	"missionSubTitle": "We're starting not just tricks - we're ready to help action actors",
+
+	"missionDesc": {
+		"title": "Our goal is to give you a new set of skills for working in the film industry. After our seminars you will be able to:",
+		"text1": "Professionally stage stage fights no matter how complicated",
+		"text2": "Mittevo adapts to the director's ability on a significant Maidan",
+		"text3": "Control your body in extreme minds",
+		"text4": "Ensure the safety of yourself and your partners while playing tricks,",
+		"text5": "Create visual scenes, which look realistic on camera"
+	},
+
+	"semRegist": {
+		"formErrors": {
+			"seminar": "Select one of the seminars",
+			"name": "Enter First Name",
+			"surname": "Enter Last Name",
+			"phone": "Enter Phone Number",
+			"email": "Enter Email"
+		},
+		"seminar": {
+			"select": "Select",
+			"seminarSelect": "Select one of the seminars",
+			"registerButton": "Register",
+			"requiredFields": "Required Fields"
+		},
+		"form": {
+			"firstName": "First Name",
+			"lastName": "Last Name",
+			"phone": "Phone Number",
+			"email": "Email"
+		}
+	},
+	"registerModalMessages": {
+		"success": {
+			"title": "Great!",
+			"message1": "Your participation in the seminar has been successfully booked! Registration will be completed after payment.",
+			"message2": "If you wish to pay later, you will receive an email within 10 minutes with a link to complete the registration. Don't forget to check your 'Spam' folder."
+		},
+		"warning": {
+			"alreadyRegistered": {
+				"title": "Attention!",
+				"message1": "You are already registered for this seminar.",
+				"message2": "Please select another seminar to participate in."
+			},
+			"emailExists": {
+				"title": "Attention!",
+				"message1": "A user with this email address is already registered.",
+				"message2": "If this is your email, please enter a different phone number."
+			},
+			"phoneExists": {
+				"title": "Attention!",
+				"message1": "A user with this phone number is already registered.",
+				"message2": "If this is your number, please enter a different email."
+			},
+			"emailPhoneConflict": {
+				"title": "Data conflict!",
+				"message1": "Email and phone number belong to different accounts.",
+				"message2": "Please contact support."
+			}
+		},
+		"error": {
+			"title": "Oops!",
+			"message1": "A technical error has occurred.",
+			"message2": "Please try again later."
+		}
+	}
 }
