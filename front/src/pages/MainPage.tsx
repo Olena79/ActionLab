@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { lazy } from 'react'
 import { styled } from '@mui/system'
 import FloatingButton from '../components/FloatingButton'
-import AnimatedTexts from '../components/AnimatedTexts'
+
+const AnimatedTexts = lazy(() => import('../components/AnimatedTexts'))
+const AnimatedBlocks = lazy(() => import('../components/AnimatedBlocks'))
 
 const StyledPage = styled('div')(() => ({
 	display: 'flex',
@@ -18,6 +20,8 @@ const MainPage: React.FC = () => {
 			<FloatingButton />
 
 			<AnimatedTexts />
+
+			<AnimatedBlocks />
 		</StyledPage>
 	)
 }

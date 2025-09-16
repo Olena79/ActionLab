@@ -55,7 +55,7 @@ const AnimatedTexts: React.FC = () => {
 		<Wrapper>
 			<Text1 ref={titleRef}>{t('mainTitle')}</Text1>
 			<Text2 ref={descRef}>{t('mainTitle2')}</Text2>
-			<Box>
+			<BoxGap>
 				<BoxGrid>
 					<Text3 ref={subDesc1Ref}>{t('mainDesc01')}</Text3>
 					<span> </span>
@@ -73,7 +73,7 @@ const AnimatedTexts: React.FC = () => {
 					<span> </span>
 					<Text3 ref={subDesc3Ref}>{t('mainDesc03')}</Text3>
 				</BoxGrid>
-			</Box>
+			</BoxGap>
 		</Wrapper>
 	)
 }
@@ -131,7 +131,16 @@ const Text3 = styled('div')(({ theme }) => ({
 	borderRadius: 24,
 	width: 'fit-content',
 	textAlign: 'center',
+	whiteSpace: 'nowrap',
 }))
+
+const BoxGap = styled(Box)({
+	'@media (max-width: 600px)': {
+		display: 'flex',
+		flexDirection: 'column',
+		gap: 12,
+	},
+})
 
 const BoxGrid = styled(Box)({
 	display: 'grid',

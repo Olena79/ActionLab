@@ -79,5 +79,18 @@
 			"message1": "A technical error has occurred.",
 			"message2": "Please try again later."
 		}
+	},
+	"slogan": {
+		"text1": "We don't just teach how to fight —",
+		"text11": "we teach how to understand",
+
+		"text2": "Not just jump —",
+		"text22": "but trust the air",
+
+		"text3": "Not just fall —",
+		"text33": "but fall beautifully and with an idea",
+
+		"text4": "We don't prepare the body —",
+		"text44": "we temper the spirit!"
 	}
 }
