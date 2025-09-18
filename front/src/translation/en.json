@@ -92,5 +92,53 @@
 
 		"text4": "We don't prepare the body —",
 		"text44": "we temper the spirit!"
+	},
+	"infoBlock": {
+		"block1": {
+			"text1": {
+				"text1": "Physical confidence —",
+				"text2": "mastering body and space"
+			},
+			"text2": {
+				"text1": "Psychological resilience —",
+				"text2": "controlling fear, stress, pain"
+			},
+			"text3": {
+				"text1": "Discipline and endurance —",
+				"text2": "when limits",
+				"text3": "become starting lines"
+			},
+			"text4": {
+				"text1": "Creativity —",
+				"text2": "when body becomes language,",
+				"text3": "and movement — words"
+			},
+			"text5": {
+				"text1": "Teamwork —",
+				"text2": "when individuality",
+				"text3": "multiplies into synergy"
+			},
+			"text6": {
+				"text1": "Practical skills —",
+				"text2": "tools that transform",
+				"text3": "dreams into actions"
+			}
+		},
+		"block2": {
+			"title": "After a series of seminars, you will experience a new dimension of body and mind",
+			"desc1": "From dream to profession",
+			"desc2": "From body to character",
+			"desc3": "From movement to truth"
+		},
+		"block3": {
+			"desc1": "Seminars are a quantum leap into the world of your own possibilities. In a minimum of time you will reveal the multifaceted creative personality that has been dormant inside, find your superpowers and turn them into a weapon of success.",
+			"desc2": "This is where a sharp memory, laser attention, boundless imagination and magnetic sociability are born. You will develop unwavering self-confidence that radiates charisma and learn to dance with the chaos of non-standard situations.",
+			"desc3": "The main thing is that you will master the revolutionary philosophy of the 'Principle of the Game', which turns life into an exciting adventure, where each challenge becomes a new level to pass."
+		},
+		"block4": {
+			"text1": "Create your movement,",
+			"text2": "your cinema,",
+			"text3": "your legend"
+		}
 	}
 }

@@ -34,25 +34,25 @@ const ScrollAnimatedBlocks: React.FC = () => {
 		{
 			text: 'slogan.text1',
 			text1: 'slogan.text11',
-			startPercent: 30,
-			img: 'https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758027828/wrestlingpng_def7pe.png',
+			startPercent: 7,
+			img: 'https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758030024/fghfhsz_pavzjt.png',
 		},
 		{
 			text: 'slogan.text2',
 			text1: 'slogan.text22',
-			startPercent: 40,
+			startPercent: 10,
 			img: 'https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758028612/fghfhsz_uhuoci.png',
 		},
 		{
 			text: 'slogan.text3',
 			text1: 'slogan.text33',
-			startPercent: 50,
-			img: 'https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758030024/fghfhsz_pavzjt.png',
+			startPercent: 13,
+			img: 'https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758027828/wrestlingpng_def7pe.png',
 		},
 		{
 			text: 'slogan.text4',
 			text1: 'slogan.text44',
-			startPercent: 60,
+			startPercent: 16,
 			img: 'https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758032094/%D1%81%D0%B0%D0%BC%D0%BF%D0%B8%D1%80_p8oorr.png',
 		},
 	]
@@ -132,15 +132,19 @@ const BoxItem = styled('div')(({ theme }) => ({
 	transition: 'transform 0.2s ease-out, opacity 0.2s ease-out',
 	'@media (max-width: 600px)': {
 		fontSize: '13px',
+		maxWidth: 400,
 	},
 }))
 
-const BoxInfo = styled('div')(() => ({
+const BoxInfo = styled('div')(({ theme }) => ({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'space-between',
-	gap: 32,
+	gap: 12,
 	width: '100%',
+	border: `3px solid ${theme.palette.secondary.main}`,
+	padding: '12px 20px',
+	borderRadius: '8px',
 }))
 
 const IconWrapper = styled('div')(({ theme }) => ({}))

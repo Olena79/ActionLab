@@ -1,6 +1,7 @@
 import React, { lazy } from 'react'
 import { styled } from '@mui/system'
 import FloatingButton from '../components/FloatingButton'
+import InfoBlock from '../components/InfoBlock'
 
 const AnimatedTexts = lazy(() => import('../components/AnimatedTexts'))
 const AnimatedBlocks = lazy(() => import('../components/AnimatedBlocks'))
@@ -22,6 +23,7 @@ const MainPage: React.FC = () => {
 			<AnimatedTexts />
 
 			<AnimatedBlocks />
+			<InfoBlock />
 		</StyledPage>
 	)
 }

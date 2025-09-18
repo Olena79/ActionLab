@@ -3,7 +3,6 @@ import { Box, styled } from '@mui/material'
 
 const StyledFooter = styled('footer')(({ theme }) => ({
 	width: '100%',
-	marginTop: 30,
 	padding: 30,
 	backgroundColor: theme.palette.primary.main,
 }))
