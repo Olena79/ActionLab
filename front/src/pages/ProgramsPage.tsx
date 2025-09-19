@@ -244,7 +244,7 @@ const ProgramsPage: React.FC = () => {
 					message2='Усі деталі щодо семінару, включаючи реквізити для оплати та додaткову інформацію, ми надіслали на вашу електронну пошту.'
 					onClose={() => setOpenTempPayModal(false)}
 					title2='Будь ласка, здійсніть оплату на карту:  '
-					subTitle2='1111 1111 1111 1111'
+					subTitle2='4149 6090 1791 1431'
 					title3={`Термін оплати: до ${formatDate(
 						selectedSeminar.selectedDate!.date
 					)}`}
