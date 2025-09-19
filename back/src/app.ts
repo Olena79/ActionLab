@@ -43,6 +43,11 @@ app.use((req, res, next) => {
 // Підключення маршрутів
 app.use('/', routes)
 
+// Рефреш бекенду
+app.get('/health', (req, res) => {
+  res.status(200).send('OK')
+})
+
 // Обробка 404 помилки
 app.use(
   (req: Request, res: Response, next: NextFunction) => {
