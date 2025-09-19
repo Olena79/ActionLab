@@ -53,4 +53,5 @@ const StyledButton = styled(Button)(({ theme }) => ({
 const StyledLink = styled('a')(() => ({
 	textDecoration: 'none',
 	textAlign: 'center',
+	color: 'inherit',
 }))

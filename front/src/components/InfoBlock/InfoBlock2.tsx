@@ -42,7 +42,7 @@ const StyledBlock2 = styled('div')(({ theme }) => ({
 	backgroundPosition: 'center bottom',
 
 	'@media (max-width: 900px)': {},
-	'@media (max-width: 800px)': {},
+	'@media (max-width: 600px)': {},
 }))
 
 const StyledBlockTytle = styled('div')(({ theme }) => ({

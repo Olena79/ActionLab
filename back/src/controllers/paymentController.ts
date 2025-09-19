@@ -4,6 +4,8 @@ import { PaymentModel } from '../models/Payment'
 import { createMonobankInvoiceApi } from '../services/monobankService'
 import { UserModel } from '../models/User'
 import { sendPaymentSuccessEmail } from './emailController'
+import { format } from 'date-fns'
+import { transporter } from '../config/mailer'
 
 export const createMonobankInvoice = async (
   req: Request,
@@ -173,5 +175,77 @@ export const getPaymentStatus = async (
     res
       .status(500)
       .json({ success: false, message: 'server_error' })
+  }
+}
+
+//==================================================
+
+interface TempPaymentPayload {
+  userData: {
+    firstName: string
+    lastName: string
+    phone: string
+    email: string
+  }
+  seminarData: {
+    title: string
+    date: string
+  }
+}
+
+export const sendTempPaymentEmail = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const { userData, seminarData } =
+      req.body as TempPaymentPayload
+
+    const seminarDate = new Date(seminarData.date)
+    const nextDay = new Date(seminarDate)
+    nextDay.setDate(nextDay.getDate() + 1)
+
+    // Форматування дат у вигляді "дд.мм.рррр"
+    const formattedDate = format(seminarDate, 'dd.MM.yyyy')
+    const formattedNextDay = format(nextDay, 'dd.MM.yyyy')
+
+    const mailOptions = {
+      from: `"ActionLab" <${process.env.SMTP_USER}>`,
+      to: userData.email,
+      subject: `Реєстрація на семінар: ${seminarData.title}`,
+      html: `
+        <p>Вітаємо, <b>${userData.firstName} ${userData.lastName}</b>!</p>
+        <br />
+        <p>Ви успішно зареєстровані на семінар: <b>${seminarData.title}</b></p>
+        <br />
+        <p>Дати проведення: <b>${formattedDate} - ${formattedNextDay}</b></p>
+        <br />
+        <p>Будь ласка, здійсніть оплату на карту: <b>1111 1111 1111 1111</b></p>
+        <br />
+        <p>Термін оплати: до <b>${formattedDate}</b></p>
+        <br />
+        <p>Дякуємо за довіру! Чекаємо на вас на семінарі.</p>
+        <br />
+        <b><a href="${process.env.CLIENT_URL}" target="_blank" rel="noopener noreferrer">Сайт</a></b>&nbsp;&nbsp;
+        <b><a href="${process.env.INSTA_URL}" target="_blank" rel="noopener noreferrer">Instagram</a></b>&nbsp;&nbsp;
+        <b><a href="${process.env.FACEBOOK_URL}" target="_blank" rel="noopener noreferrer">Facebook</a></b>
+      `,
+    }
+
+    await transporter.sendMail(mailOptions)
+
+    return res.status(200).json({
+      success: true,
+      message: 'Email sent successfully',
+    })
+  } catch (error) {
+    console.error(
+      '❌ Error sending temp payment email:',
+      error,
+    )
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to send email',
+    })
   }
 }

@@ -3,6 +3,7 @@ import { Box, Typography, Modal, styled } from '@mui/material'
 import ButtonOutlined from './ButtonOutlined'
 import { useTranslation } from '../translation/TranslationContext'
 import ButtonContained from './ButtonContained'
+import { sendTempPaymentEmail } from '../actions/monobank'
 
 interface ConfirmationModalProps {
 	open: boolean
@@ -12,6 +13,16 @@ interface ConfirmationModalProps {
 	onClose: () => void
 	onPay?: () => void // викликається для кнопки "Сплатити"
 	showPayButton?: boolean // показати кнопку "Сплатити"
+	userData?: {
+		firstName: string
+		lastName: string
+		phone: string
+		email: string
+	}
+	seminarData?: {
+		title: string
+		date: string
+	}
 }
 
 const ConfirmModal: React.FC<ConfirmationModalProps> = ({
@@ -22,8 +33,22 @@ const ConfirmModal: React.FC<ConfirmationModalProps> = ({
 	onClose,
 	onPay,
 	showPayButton = false,
+	userData,
+	seminarData,
 }) => {
 	const { t } = useTranslation()
+
+	const handlePayLater = async () => {
+		try {
+			if (userData && seminarData) {
+				await sendTempPaymentEmail({ userData, seminarData })
+			}
+		} catch (err) {
+			console.error('❌ Помилка при відправці листа:', err)
+		} finally {
+			onClose()
+		}
+	}
 
 	return (
 		<Modal open={open} onClose={onClose}>
@@ -61,7 +86,7 @@ const ConfirmModal: React.FC<ConfirmationModalProps> = ({
 						<>
 							<ButtonOutlined
 								text={t('payment.payLaterBtn')}
-								onClick={onClose}
+								onClick={handlePayLater}
 							/>
 							<ButtonContained text={t('payment.payBtn')} onClick={onPay} />
 						</>
@@ -73,6 +98,8 @@ const ConfirmModal: React.FC<ConfirmationModalProps> = ({
 }
 
 export default ConfirmModal
+
+//==================================================
 
 const CloseButton = styled('button')(({ theme }) => ({
 	position: 'absolute',

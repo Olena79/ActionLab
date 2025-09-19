@@ -1,10 +1,12 @@
-import React, { lazy } from 'react'
+import React, { lazy, Suspense } from 'react'
 import { styled } from '@mui/system'
 import FloatingButton from '../components/FloatingButton'
-import InfoBlock from '../components/InfoBlock'
+// import FloatingButton from '../components/FloatingButton'
+// import FloatingButtonProg from '../components/FloatingButtonProg'
 
 const AnimatedTexts = lazy(() => import('../components/AnimatedTexts'))
 const AnimatedBlocks = lazy(() => import('../components/AnimatedBlocks'))
+const InfoBlock = lazy(() => import('../components/InfoBlock'))
 
 const StyledPage = styled('div')(() => ({
 	display: 'flex',
@@ -23,7 +25,12 @@ const MainPage: React.FC = () => {
 			<AnimatedTexts />
 
 			<AnimatedBlocks />
-			<InfoBlock />
+
+			<Suspense
+				fallback={<div style={{ width: '100%' }}>Завантаження подій...</div>}
+			>
+				<InfoBlock />
+			</Suspense>
 		</StyledPage>
 	)
 }

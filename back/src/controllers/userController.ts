@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import { UserModel } from '../models/User'
-import {
-  scheduleDelayedPaymentEmail,
-  scheduleEmailWithoutPayment,
-} from './emailController'
+// import {
+//   scheduleDelayedPaymentEmail,
+//   scheduleEmailWithoutPayment,
+// } from './emailController'
 
 interface RegisterSeminarPayload {
   title: string
@@ -29,11 +29,9 @@ export const registerUser = async (
       email,
     } = payload
 
-    // 1) знаходимо по email і по phone окремо
     const userByEmail = await UserModel.findOne({ email })
     const userByPhone = await UserModel.findOne({ phone })
 
-    // 2) якщо email і phone належать різним користувачам — конфлікт
     if (
       userByEmail &&
       userByPhone &&
@@ -49,16 +47,13 @@ export const registerUser = async (
       })
     }
 
-    // 3) якщо є користувач тільки за email (і phone від іншого відсутній) — повідомляємо про конфлікт
     if (userByEmail && !userByPhone) {
-      // можливо користувач намагається зареєструватися з іншим телефоном, але з тією ж поштою
       return res.status(200).json({
         success: false,
         message: 'email_exists',
       })
     }
 
-    // 4) якщо є користувач тільки за phone (і email відсутній) — повідомляємо про конфлікт
     if (userByPhone && !userByEmail) {
       return res.status(200).json({
         success: false,
@@ -66,16 +61,13 @@ export const registerUser = async (
       })
     }
 
-    // Тепер: або нікого не знайшли (новий користувач), або знайшли одного користувача (userByEmail || userByPhone) — це один і той самий user
     let user = userByEmail || userByPhone || null
     const seminarDate = new Date(date)
 
-    // Перевіримо, чи вже зареєстрований (для існуючого користувача)
     if (user) {
       const alreadyRegistered = user.seminars.some(
         (s) =>
           s.title === title &&
-          // порівнюємо по ms
           new Date(s.date).getTime() ===
             seminarDate.getTime(),
       )
@@ -87,14 +79,12 @@ export const registerUser = async (
         })
       }
 
-      // якщо не зареєстрований — додаємо семінар
       user.seminars.push({
         title,
         date: seminarDate,
         isPaid: false,
       })
     } else {
-      // Новий користувач
       user = new UserModel({
         firstName,
         lastName,
@@ -107,7 +97,6 @@ export const registerUser = async (
       })
     }
 
-    // Зберігаємо (якщо щось пішло не так, впаде у catch)
     const savedUser = await user.save()
     const seminar = savedUser.seminars.find(
       (s) =>
@@ -124,11 +113,11 @@ export const registerUser = async (
     }
 
     // Заплануємо лист
-    await scheduleDelayedPaymentEmail(
-      savedUser._id.toString(),
-      seminar._id!.toString(),
-      40000, // <-- тут підстав свою суму
-    )
+    // await scheduleDelayedPaymentEmail(
+    //   savedUser._id.toString(),
+    //   seminar._id!.toString(),
+    //   40000, // тут підстав суму в копійках
+    // )
 
     // Успіх
     return res.status(200).json({
@@ -140,7 +129,6 @@ export const registerUser = async (
     console.error('❌ Помилка реєстрації на семінар:', err)
 
     // Якщо дубль унікального поля — повертаємо більш конкретний меседж
-    // (опціонально)
     const e = err as any
     if (e && e.code === 11000) {
       // визначимо яке поле викликало дубль

@@ -127,7 +127,7 @@ const Select = styled('select')(({ theme }) => ({
 
 const StyledError = styled('span')({
 	color: 'red',
-	fontSize: 12,
+	fontSize: 9,
 	minHeight: '1.2em',
 	marginLeft: 24,
 })

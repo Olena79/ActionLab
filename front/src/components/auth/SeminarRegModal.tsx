@@ -2,22 +2,23 @@ import React, { useEffect, useState } from 'react'
 import { Box, styled } from '@mui/system'
 import { InfoMessage, ISeminar } from '../../types/seminar'
 import { useTranslation } from '../../translation/TranslationContext'
-import { getFutureSeminars } from '../../actions/seminarActions'
 import { registerUser } from '../../actions/authActions'
-import { SeminarSelect, TextInput } from './SeminarSelect'
 import ButtonContained from '../ButtonContained'
-import { createMonobankInvoice } from '../../actions/monobank'
+// import { createMonobankInvoice } from '../../actions/monobank'
+import { TextInput } from './SeminarSelect'
 
-interface UserRegModalProps {
+interface SeminarRegModalProps {
+	seminar: ISeminar
 	onClose?: () => void
 	onSuccess: (msg: InfoMessage) => void
 }
 
-const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
+const SeminarRegModal: React.FC<SeminarRegModalProps> = ({
+	seminar,
+	onClose,
+	onSuccess,
+}) => {
 	const { t } = useTranslation()
-	const [seminars, setSeminars] = useState<ISeminar[]>([])
-	const [loading, setLoading] = useState(true)
-	const [selectedSeminarId, setSelectedSeminarId] = useState('')
 
 	const [firstName, setFirstName] = useState('')
 	const [lastName, setLastName] = useState('')
@@ -27,39 +28,22 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 	const [errors, setErrors] = useState<Record<string, string>>({})
 	const [touched, setTouched] = useState<Record<string, boolean>>({})
 
-	// fetch seminars
-	useEffect(() => {
-		const fetch = async () => {
-			try {
-				const data = await getFutureSeminars()
-				setSeminars(data)
-			} catch (e) {
-				console.error(e)
-			} finally {
-				setLoading(false)
-			}
-		}
-		fetch()
-	}, [])
-
 	// validate
 	useEffect(() => {
 		const newErrors: Record<string, string> = {}
-		if (touched.seminar && !selectedSeminarId)
-			newErrors.seminar = t('semRegist.formErrors.seminar')
 		if (touched.firstName && firstName.trim().length < 2)
 			newErrors.firstName = t('semRegist.formErrors.name')
 		if (touched.lastName && lastName.trim().length < 2)
 			newErrors.lastName = t('semRegist.formErrors.surname')
-		if (touched.phone && !/^[0-9+\-\s]{7,}$/.test(phone))
-			newErrors.phone = t('semRegist.formErrors.phone')
+		if (touched.phone && !/^\d{10}$/.test(phone))
+			newErrors.phone =
+				t('semRegist.formErrors.phone') + ' ' + t('semRegist.formErrors.phone2')
 		if (touched.email && !/\S+@\S+\.\S+/.test(email))
 			newErrors.email = t('semRegist.formErrors.email')
 		setErrors(newErrors)
-	}, [selectedSeminarId, firstName, lastName, phone, email, touched, t])
+	}, [firstName, lastName, phone, email, touched, t])
 
 	const isFormValid =
-		!!selectedSeminarId &&
 		!!firstName &&
 		!!lastName &&
 		!!phone &&
@@ -70,13 +54,10 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 		e.preventDefault()
 		if (!isFormValid) return
 
-		const seminar = seminars.find(s => s._id === selectedSeminarId)
-		if (!seminar) return
-
 		try {
 			const response = await registerUser({
 				title: seminar.title,
-				date: seminar.date,
+				date: seminar.selectedDate!.date,
 				isPaid: false,
 				firstName,
 				lastName,
@@ -84,9 +65,6 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 				email,
 			})
 
-			console.log('✅ Відповідь від беку:', response)
-
-			// Розбираємося з відповіді беку
 			switch (response.message) {
 				case 'registered':
 					onSuccess({
@@ -94,30 +72,32 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 						message1: t('registerModalMessages.success.message1'),
 						message2: t('registerModalMessages.success.message2'),
 						showPayButton: true,
-						onPay: async () => {
-							try {
-								const invoice = await createMonobankInvoice({
-									userId: response.userId,
-									seminarId: seminar._id,
-									amount: 400000, // 4000 грн у копійках
-									currency: 'UAH',
-								})
+						onPay: () => {},
+						userData: { firstName, lastName, phone, email },
+						// onPay: async () => {
+						// 	try {
+						// 		const invoice = await createMonobankInvoice({
+						// 			userId: response.userId,
+						// 			seminarId: seminar._id,
+						// 			amount: 400000, // 4000 грн у копійках
+						// 			currency: 'UAH',
+						// 		})
 
-								if (invoice.success && invoice.invoiceUrl) {
-									window.location.href = invoice.invoiceUrl // редірект
-								} else {
-									alert('Error Payment')
-								}
-							} catch (err) {
-								console.error(err)
-								onSuccess({
-									title: t('payment.error.title'),
-									message1: t('payment.error.message1'),
-									message2: t('payment.error.message2'),
-									showPayButton: false,
-								})
-							}
-						},
+						// 		if (invoice.success && invoice.invoiceUrl) {
+						// 			window.location.href = invoice.invoiceUrl
+						// 		} else {
+						// 			alert('Error Payment')
+						// 		}
+						// 	} catch (err) {
+						// 		console.error(err)
+						// 		onSuccess({
+						// 			title: t('payment.error.title'),
+						// 			message1: t('payment.error.message1'),
+						// 			message2: t('payment.error.message2'),
+						// 			showPayButton: false,
+						// 		})
+						// 	}
+						// },
 					})
 					break
 
@@ -137,13 +117,13 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 				case 'email_exists':
 					onSuccess({
 						title:
-							t('registerModalMessages.warning..emailExists.title') ||
+							t('registerModalMessages.warning.emailExists.title') ||
 							'Пошта уже використовується',
 						message1:
-							t('registerModalMessages.warning..emailExists.message1') ||
+							t('registerModalMessages.warning.emailExists.message1') ||
 							'Користувач з такою поштою вже існує.',
 						message2:
-							t('registerModalMessages.warning..emailExists.message2') ||
+							t('registerModalMessages.warning.emailExists.message2') ||
 							'Якщо це ваша пошта, будь ласка, увійдіть або використайте інший телефон.',
 						showPayButton: false,
 					})
@@ -152,13 +132,13 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 				case 'phone_exists':
 					onSuccess({
 						title:
-							t('registerModalMessages.warning.phoneExists') ||
+							t('registerModalMessages.warning.phoneExists.title') ||
 							'Телефон уже використано',
 						message1:
-							t('registerModalMessages.warning.phoneExists') ||
+							t('registerModalMessages.warning.phoneExists.message1') ||
 							'Користувач з таким телефоном вже існує.',
 						message2:
-							t('registerModalMessages.warning.phoneExists') ||
+							t('registerModalMessages.warning.phoneExists.message2') ||
 							'Якщо це ваш номер, будь ласка, увійдіть або використайте іншу пошту.',
 						showPayButton: false,
 					})
@@ -170,7 +150,7 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 							t('registerModalMessages.warning.emailPhoneConflict.title') ||
 							'Конфлікт даних',
 						message1:
-							t('registerModalMessages.warning.emailPhoneConflic.message1t') ||
+							t('registerModalMessages.warning.emailPhoneConflict.message1') ||
 							"Пошта і номер телефону належать різним обліковим записам. Будь ласка, зв'яжіться з підтримкою.",
 						message2: t(
 							'registerModalMessages.warning.emailPhoneConflict.message2'
@@ -180,7 +160,6 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 					break
 
 				default:
-					// помилка або невідома відповідь
 					onSuccess({
 						title: t('registerModalMessages.error.title'),
 						message1: t('registerModalMessages.error.message1'),
@@ -208,25 +187,22 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 						<CloseButton type='button' onClick={() => onClose?.()}>
 							×
 						</CloseButton>
-						<SeminarSelect
-							value={selectedSeminarId}
-							seminars={seminars}
-							error={errors.seminar}
-							touched={!!touched.seminar}
-							onChange={setSelectedSeminarId}
-							onFocus={() => setTouched(prev => ({ ...prev, seminar: true }))}
-							disabled={loading}
-							placeholder={t('semRegist.seminar.select')}
-							label={t('semRegist.seminar.seminarSelect')}
-						/>
-						<Row>
+
+						<Row sx={{ marginTop: 2 }}>
 							<TextInput
 								type='text'
 								value={firstName}
 								error={errors.firstName}
 								touched={!!touched.firstName}
 								placeholder={t('semRegist.form.firstName')}
-								onChange={setFirstName}
+								onChange={value => {
+									// Приймаємо тільки букви
+									const filtered = value.replace(
+										/[^a-zA-Zа-яА-ЯёЁіІїЇєЄ'-\s]/g,
+										''
+									)
+									setFirstName(filtered)
+								}}
 								onFocus={() =>
 									setTouched(prev => ({ ...prev, firstName: true }))
 								}
@@ -237,7 +213,13 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 								error={errors.lastName}
 								touched={!!touched.lastName}
 								placeholder={t('semRegist.form.lastName')}
-								onChange={setLastName}
+								onChange={value => {
+									const filtered = value.replace(
+										/[^a-zA-Zа-яА-ЯёЁіІїЇєЄ'-\s]/g,
+										''
+									)
+									setLastName(filtered)
+								}}
 								onFocus={() =>
 									setTouched(prev => ({ ...prev, lastName: true }))
 								}
@@ -251,7 +233,11 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 								error={errors.phone}
 								touched={!!touched.phone}
 								placeholder={t('semRegist.form.phone')}
-								onChange={setPhone}
+								onChange={value => {
+									// Приймаємо тільки цифри, максимум 10 символів
+									const filtered = value.replace(/[^0-9]/g, '').slice(0, 10)
+									setPhone(filtered)
+								}}
 								onFocus={() => setTouched(prev => ({ ...prev, phone: true }))}
 							/>
 							<TextInput
@@ -285,7 +271,7 @@ const UserRegModal: React.FC<UserRegModalProps> = ({ onClose, onSuccess }) => {
 	)
 }
 
-export default UserRegModal
+export default SeminarRegModal
 //===================//=======================//
 const ModalOverlay = styled('div')({
 	position: 'fixed',

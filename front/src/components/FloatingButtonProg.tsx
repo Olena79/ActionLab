@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { styled } from '@mui/material'
-import ToSeminarsBtn from './auth/ToSeminarsBtn'
+import ButtonOutlined from './ButtonOutlined'
+import { useTranslation } from '../translation/TranslationContext'
 
-const FloatingButton = () => {
+const FloatingButtonProg = () => {
+	const { t } = useTranslation()
 	const [visible, setVisible] = useState(false)
 
 	useEffect(() => {
@@ -16,18 +18,22 @@ const FloatingButton = () => {
 
 	return (
 		<Wrapper>
-			<ToSeminarsBtn />
+			<ButtonOutlined
+				sx={{ backgroundColor: '#ffffffc1' }}
+				text={t('program.linkText')}
+				pass='/program'
+			/>
 		</Wrapper>
 	)
 }
 
-export default FloatingButton
+export default FloatingButtonProg
 
 // ===================== STYLES =====================
 const Wrapper = styled('div')(() => ({
 	position: 'fixed',
 	bottom: 26,
-	right: 10,
+	left: 10,
 	zIndex: 9999,
 	transition: 'transform 1s ease',
 	boxShadow: '0px 4px 12px rgba(0,0,0,0.3)',

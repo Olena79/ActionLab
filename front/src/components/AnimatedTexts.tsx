@@ -94,6 +94,10 @@ const Wrapper = styled('div')(() => ({
 	backgroundRepeat: 'no-repeat', // Не повторює зображення
 	width: '100%',
 	padding: '160px 30px 80px 30px',
+	'@media (max-width: 600px)': {
+		backgroundImage:
+			'url(https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758258906/sdfg_ldaufp.png)',
+	},
 }))
 
 const Text1 = styled('div')(({ theme }) => ({
@@ -146,4 +150,10 @@ const BoxGrid = styled(Box)({
 	display: 'grid',
 	gridTemplateColumns: '1fr 1fr 1fr',
 	justifyItems: 'center',
+	'@media (max-width: 600px)': {
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
 })

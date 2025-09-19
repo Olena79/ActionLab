@@ -3,6 +3,7 @@ import {
   createMonobankInvoice,
   getPaymentStatus,
   handleMonobankWebhook,
+  sendTempPaymentEmail,
 } from '../controllers/paymentController'
 import { createInvoiceValidator } from '../validators/paymentValidator'
 
@@ -16,5 +17,6 @@ router.post(
 
 router.post('/monobank/webhook', handleMonobankWebhook)
 router.get('/status', getPaymentStatus)
+router.post('/sendTempPaymentEmail', sendTempPaymentEmail)
 
 export default router

@@ -7,17 +7,28 @@ export const getFutureSeminars = async (
   res: Response,
 ) => {
   try {
-    console.log('Controller starts')
     const now = new Date()
-    console.log('Now:', now)
     const seminars = await SeminarModel.find({
-      date: { $gte: now },
+      'dates.date': { $gte: now },
     }).sort({ date: 1 })
     res.json({ success: true, seminars })
-
-    console.log('Controller get seminars: ', seminars)
   } catch (error) {
     console.error('❌ Error fetching seminars:', error)
+    res
+      .status(500)
+      .json({ success: false, message: 'Server error' })
+  }
+}
+
+export const getSeminars = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const seminars = await SeminarModel.find()
+    res.json({ success: true, seminars })
+  } catch (error) {
+    console.error('❌ Error fetching all seminars:', error)
     res
       .status(500)
       .json({ success: false, message: 'Server error' })

@@ -1,7 +1,7 @@
 import React from 'react'
-import { Box, styled, useMediaQuery } from '@mui/system'
-import LanguageSwitcher from './../components/LanguageSwitcher'
-import RegisterBtn from '../components/auth/RegisterBtn'
+import { styled, useMediaQuery } from '@mui/system'
+// import LanguageSwitcher from './../components/LanguageSwitcher'
+import ToSeminarsBtn from './auth/ToSeminarsBtn'
 
 const StyledHeader = styled('div')(({ theme }) => ({
 	display: 'flex',
@@ -12,26 +12,22 @@ const StyledHeader = styled('div')(({ theme }) => ({
 	backgroundColor: theme.palette.primary.main,
 }))
 
-const StyledBox = styled(Box)(() => ({
-	display: 'flex',
-	gap: 24,
-}))
-
 const Header: React.FC = () => {
 	const isMobile = useMediaQuery('(max-width:600px)')
 
 	return (
 		<StyledHeader>
-			<img
-				src='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758004915/FullLogoDarkPurple_doveuj.png'
-				alt='Logo'
-				height={100}
-			/>
-			<StyledBox>
-				{!isMobile && <RegisterBtn />}
+			<a href='/'>
+				<img
+					src='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758004915/FullLogoDarkPurple_doveuj.png'
+					alt='Logo'
+					height={isMobile ? 70 : 90}
+				/>
+			</a>
 
-				<LanguageSwitcher />
-			</StyledBox>
+			<ToSeminarsBtn />
+
+			{/* <LanguageSwitcher /> */}
 		</StyledHeader>
 	)
 }

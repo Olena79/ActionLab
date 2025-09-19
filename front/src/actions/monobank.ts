@@ -53,3 +53,40 @@ export const getPaymentStatus = async (
 		}
 	}
 }
+//====================================================
+
+export interface TempPaymentPayload {
+	userData: {
+		firstName: string
+		lastName: string
+		phone: string
+		email: string
+	}
+	seminarData: {
+		title: string
+		date: string
+	}
+}
+
+interface TempPaymentResponse {
+	success: boolean
+	message?: string
+}
+
+export const sendTempPaymentEmail = async (
+	payload: TempPaymentPayload
+): Promise<TempPaymentResponse> => {
+	try {
+		const response = await api.post<TempPaymentResponse>(
+			'/payments/sendTempPaymentEmail',
+			payload
+		)
+		return response.data
+	} catch (error: any) {
+		console.error('❌ Помилка відправки тимчасового листа:', error)
+		return {
+			success: false,
+			message: error?.response?.data?.message || 'network_error',
+		}
+	}
+}

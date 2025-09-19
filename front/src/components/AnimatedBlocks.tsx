@@ -1,4 +1,4 @@
-import { styled } from '@mui/material'
+import { styled, useMediaQuery } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from '../translation/TranslationContext'
 
@@ -16,6 +16,7 @@ function throttle<T extends (...args: any[]) => void>(func: T, limit: number) {
 const ScrollAnimatedBlocks: React.FC = () => {
 	const { t } = useTranslation()
 	const [scrollPercent, setScrollPercent] = useState(0)
+	const isMobile = useMediaQuery('(max-width:600px)')
 
 	useEffect(() => {
 		const handleScroll = throttle(() => {
@@ -34,7 +35,7 @@ const ScrollAnimatedBlocks: React.FC = () => {
 		{
 			text: 'slogan.text1',
 			text1: 'slogan.text11',
-			startPercent: 7,
+			startPercent: isMobile ? 3 : 7,
 			img: 'https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758030024/fghfhsz_pavzjt.png',
 		},
 		{
