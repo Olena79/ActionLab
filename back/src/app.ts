@@ -22,10 +22,12 @@ const PORT = process.env.PORT || 10000
 
 app.use(
   cors({
-    origin:
-      process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000',
+      'https://action-lab-phi.vercel.app',
+    ],
     credentials: true,
-    methods: 'GET,POST,DELETE',
+    methods: 'POST',
     allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 )
