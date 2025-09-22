@@ -88,7 +88,7 @@ const Wrapper = styled('div')(() => ({
 	gap: 32,
 	fontWeight: 600,
 	backgroundImage:
-		'url(https://res.cloudinary.com/dsgqhwqr7/image/upload/v1757667229/photo_2025-09-12_00-08-59_adifid.jpg)',
+		'url(https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758545691/photo_2025-09-12_00-08-59_iqyhvj.png)',
 	backgroundSize: 'cover', // Покриває всю область
 	backgroundPosition: 'center', // Центрує зображення
 	backgroundRepeat: 'no-repeat', // Не повторює зображення
@@ -96,7 +96,7 @@ const Wrapper = styled('div')(() => ({
 	padding: '160px 30px 80px 30px',
 	'@media (max-width: 600px)': {
 		backgroundImage:
-			'url(https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758258906/sdfg_ldaufp.png)',
+			'url(https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758545691/sdgkgfg_plavnz.png)',
 	},
 }))
 
