@@ -33,9 +33,6 @@ const App: React.FC = () => {
 
 							<Routes>
 								<Route path='/' element={<MainPage />} />
-							</Routes>
-
-							<Routes>
 								<Route path='/program' element={<ProgramsPage />} />
 							</Routes>
 

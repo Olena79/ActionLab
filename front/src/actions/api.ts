@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-	baseURL: process.env.REACT_APP_SERVER_URL || 'https://actionlab.onrender.com',
+	baseURL: process.env.REACT_APP_SERVER_URL || 'http://localhost:10000',
 })
 
 api.interceptors.response.use(

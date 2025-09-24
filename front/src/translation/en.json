@@ -140,5 +140,13 @@
 			"text2": "your cinema,",
 			"text3": "your legend"
 		}
+	},
+	"chat": {
+		"title": "ActionLab Chatbot",
+		"error": "An error occurred",
+		"welcome": "Welcome! Ask a question and I'll try to help you.",
+		"typing": "Typing...",
+		"message": "Ask a question",
+		"send": " Send"
 	}
 }

@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { styled } from '@mui/material'
+import { Fab, styled } from '@mui/material'
 import ToSeminarsBtn from './auth/ToSeminarsBtn'
+import Chat from './Chat'
+import ChatIcon from '@mui/icons-material/Chat'
 
 const FloatingButton = () => {
 	const [visible, setVisible] = useState(false)
+	const [chatOpen, setChatOpen] = useState(false)
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
@@ -16,6 +19,22 @@ const FloatingButton = () => {
 
 	return (
 		<Wrapper>
+			<Fab
+				color='secondary'
+				aria-label='chat'
+				sx={{ position: 'fixed', bottom: 86, right: 16 }}
+				onClick={() => {
+					setChatOpen(true)
+					setTimeout(() => {
+						const firstInput =
+							document.querySelector<HTMLInputElement>('#chat-input')
+						firstInput?.focus()
+					}, 0)
+				}}
+			>
+				<ChatIcon />
+			</Fab>
+			<Chat open={chatOpen} onClose={() => setChatOpen(false)} />
 			<ToSeminarsBtn />
 		</Wrapper>
 	)

@@ -1,8 +1,6 @@
 import React, { lazy, Suspense } from 'react'
 import { styled } from '@mui/system'
 import FloatingButton from '../components/FloatingButton'
-// import FloatingButton from '../components/FloatingButton'
-// import FloatingButtonProg from '../components/FloatingButtonProg'
 
 const AnimatedTexts = lazy(() => import('../components/AnimatedTexts'))
 const AnimatedBlocks = lazy(() => import('../components/AnimatedBlocks'))
