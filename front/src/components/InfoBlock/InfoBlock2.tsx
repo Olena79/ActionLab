@@ -1,13 +1,45 @@
 import React from 'react'
-import { styled } from '@mui/material'
+import { Box, styled } from '@mui/material'
 import { useTranslation } from '../../translation/TranslationContext'
 
 const InfoBlock2: React.FC = () => {
 	const { t } = useTranslation()
+	const texts = [
+		'infoBlock.block1.text1.text1',
+		'infoBlock.block1.text2.text1',
+		'infoBlock.block1.text3.text1',
+		'infoBlock.block1.text4.text1',
+		'infoBlock.block1.text5.text1',
+		'infoBlock.block1.text6.text1',
+	]
 
 	return (
 		<StyledBlock2>
 			<StyledBlockTytle>{t('infoBlock.block2.title')}</StyledBlockTytle>
+			<Box
+				sx={{
+					display: 'flex',
+					flexDirection: 'column',
+					gap: 3,
+					marginBottom: 3,
+				}}
+			>
+				{texts.map((group, idx) => (
+					<StyledBlock11 key={idx}>
+						<img
+							src='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758098388/Ellipse_1_e87rcf.svg'
+							alt='Circle'
+							width={25}
+							height={25}
+						/>
+						<StyledBlock11Texts>
+							<span style={{ marginRight: 4 }} key={idx}>
+								{t(group)}
+							</span>
+						</StyledBlock11Texts>
+					</StyledBlock11>
+				))}
+			</Box>
 			<StyledDescBox>
 				<StyledDesc>{t('infoBlock.block2.desc1')}</StyledDesc>
 				<StyledDesc>{t('infoBlock.block2.desc2')}</StyledDesc>
@@ -16,8 +48,8 @@ const InfoBlock2: React.FC = () => {
 
 			<LastInfoBlock>
 				<StyledDesc2>{t('infoBlock.block3.desc1')}</StyledDesc2>
-				<StyledDesc2>{t('infoBlock.block3.desc2')}</StyledDesc2>
-				<StyledDesc2>{t('infoBlock.block3.desc3')}</StyledDesc2>
+				{/* <StyledDesc2>{t('infoBlock.block3.desc2')}</StyledDesc2>
+				<StyledDesc2>{t('infoBlock.block3.desc3')}</StyledDesc2> */}
 			</LastInfoBlock>
 		</StyledBlock2>
 	)
@@ -96,4 +128,29 @@ const StyledDesc2 = styled('div')(({ theme }) => ({
 	fontSize: 16,
 	fontWeight: 600,
 	'@media (max-width: 800px) and (min-width: 600px)': {},
+}))
+
+const StyledBlock11 = styled('div')(({ theme }) => ({
+	display: 'flex',
+	gap: 16,
+	alignItems: 'center',
+
+	'&:nth-of-type(even)': {
+		marginLeft: 150,
+	},
+}))
+
+const StyledBlock11Texts = styled('div')(() => ({
+	display: 'flex',
+	alignItems: 'center',
+	'@media (max-width: 600px)': {
+		flexDirection: 'column',
+		alignItems: 'flex-start',
+		'& span:nth-of-type(2)': {
+			marginLeft: 40,
+		},
+		'& span:nth-of-type(3)': {
+			marginLeft: 80,
+		},
+	},
 }))

@@ -54,7 +54,21 @@ const AnimatedTexts: React.FC = () => {
 	return (
 		<Wrapper>
 			<Text1 ref={titleRef}>{t('mainTitle')}</Text1>
-			<Text2 ref={descRef}>{t('mainTitle2')}</Text2>
+			<Box
+				sx={{
+					width: '100%',
+					'@media (min-width: 600px)': {
+						display: 'flex',
+						justifyContent: 'flex-end',
+					},
+					'@media (min-width: 950px)': {
+						paddingRight: 25,
+					},
+				}}
+			>
+				<Text2 ref={descRef}>{t('mainTitle2')}</Text2>
+			</Box>
+
 			<BoxGap>
 				<BoxGrid>
 					<Text3 ref={subDesc1Ref}>{t('mainDesc01')}</Text3>
@@ -64,7 +78,9 @@ const AnimatedTexts: React.FC = () => {
 
 				<BoxGrid>
 					<span> </span>
-					<Text3 ref={subDesc2Ref}>{t('mainDesc02')}</Text3>
+					<Text3 sx={{ padding: '16px 36px 20px 36px' }} ref={subDesc2Ref}>
+						{t('mainDesc02')}
+					</Text3>
 					<span> </span>
 				</BoxGrid>
 
@@ -84,19 +100,19 @@ export default AnimatedTexts
 const Wrapper = styled('div')(() => ({
 	display: 'flex',
 	flexDirection: 'column',
-	alignItems: 'center',
+	alignItems: 'stretch',
 	gap: 32,
 	fontWeight: 600,
 	backgroundImage:
-		'url(https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758545691/photo_2025-09-12_00-08-59_iqyhvj.png)',
+		'url(https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758705564/phmgfhdghkilio_v01rvj.png)',
 	backgroundSize: 'cover', // Покриває всю область
 	backgroundPosition: 'center', // Центрує зображення
 	backgroundRepeat: 'no-repeat', // Не повторює зображення
 	width: '100%',
-	padding: '160px 30px 80px 30px',
+	padding: '60px 30px 80px 30px',
 	'@media (max-width: 600px)': {
 		backgroundImage:
-			'url(https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758545691/sdgkgfg_plavnz.png)',
+			'url(https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758705270/sdgkgfg_fjnwff.png)',
 	},
 }))
 
@@ -124,6 +140,10 @@ const Text2 = styled('div')(({ theme }) => ({
 	borderRadius: 24,
 	width: 'fit-content',
 	textAlign: 'center',
+	marginBottom: 50,
+	'@media (max-width: 600px)': {
+		textAlign: 'flex-end',
+	},
 }))
 
 const Text3 = styled('div')(({ theme }) => ({
@@ -143,6 +163,8 @@ const BoxGap = styled(Box)({
 		display: 'flex',
 		flexDirection: 'column',
 		gap: 12,
+		justifyContent: 'flex-end',
+		alignItems: 'flex-end',
 	},
 })
 
