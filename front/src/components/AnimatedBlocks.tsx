@@ -72,8 +72,8 @@ const ScrollAnimatedBlocks: React.FC = () => {
 				// різні напрямки руху (ліворуч чи праворуч)
 				const translateX =
 					index % 2 === 0
-						? -100 + progress * 100 // зліва направо
-						: 100 - progress * 100 // справа наліво
+						? -100 + progress * 100 + 'vw' // зліва направо
+						: 100 - progress * 100 + 'vw' // справа наліво
 
 				return (
 					<BoxItem
@@ -119,6 +119,7 @@ const Wrapper = styled('div')({
 	backgroundPosition: 'center', // Центрує зображення
 	backgroundRepeat: 'no-repeat', // Не повторює зображення
 	width: '100%',
+	overflowX: 'hidden',
 })
 
 const BoxItem = styled('div')(({ theme }) => ({

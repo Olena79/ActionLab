@@ -20,6 +20,7 @@ const StyledBox = styled('div')(({ theme }) => ({
 	alignItems: 'center',
 	minHeight: '100vh',
 	backgroundColor: theme.palette.background.default,
+	overflowX: 'hidden',
 }))
 
 const App: React.FC = () => {
