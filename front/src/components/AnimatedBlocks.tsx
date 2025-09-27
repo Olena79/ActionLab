@@ -69,18 +69,16 @@ const ScrollAnimatedBlocks: React.FC = () => {
 					Math.min(1, (scrollPercent - block.startPercent) / animationRange)
 				)
 
-				// різні напрямки руху (ліворуч чи праворуч)
-				const translateX =
-					index % 2 === 0
-						? -100 + progress * 100 + 'vw' // зліва направо
-						: 100 - progress * 100 + 'vw' // справа наліво
+				// різні напрямки руху
+				const translateY = -100 + progress * 100
 
 				return (
 					<BoxItem
 						key={index}
 						style={{
-							transform: `translateX(${translateX}%)`,
+							transform: `translateY(${translateY}vh)`,
 							opacity: progress,
+							willChange: 'transform, opacity',
 						}}
 					>
 						<BoxInfo
