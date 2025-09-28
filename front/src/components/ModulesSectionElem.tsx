@@ -27,6 +27,12 @@ const ModulesSectionElem: React.FC<Props> = ({ modules }) => {
 						<ModuleContent>
 							<ModuleTitle>{module.title}</ModuleTitle>
 							<ModuleDesc>{module.description}</ModuleDesc>
+							<ArrowDown
+								src='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1759073660/arrowDown_yngbu5.svg'
+								alt='Arrow Down'
+								width={12}
+								height={12}
+							/>
 						</ModuleContent>
 					</ModuleItem>
 
@@ -82,6 +88,7 @@ const ModuleContent = styled(Box)(() => ({
 	display: 'flex',
 	flexDirection: 'column',
 	gap: '4px',
+	position: 'relative',
 }))
 
 const ModuleTitle = styled('h4')(() => ({
@@ -113,4 +120,11 @@ const FullDescriptionBox = styled(Box)(() => ({
 		color: '#495057',
 		marginBottom: '6px',
 	},
+}))
+
+const ArrowDown = styled('img')(({ theme }) => ({
+	color: theme.palette.primary.main,
+	position: 'absolute',
+	right: 5,
+	top: 35,
 }))

@@ -165,14 +165,14 @@ const ProgramsPage: React.FC = () => {
 											</InfoItem>
 										</InfoSection>
 
-										<DescriptionSection>
+										{/* <DescriptionSection>
 											<DescriptionText>
 												{seminars[activeIndex].fullDescription}
 											</DescriptionText>
-										</DescriptionSection>
+										</DescriptionSection> */}
 
 										<InfoItem>
-											<InfoLabel>Результат:</InfoLabel>
+											<InfoLabel>Специфіка програми:</InfoLabel>
 											<InfoValue>{seminars[activeIndex].resultInfo}</InfoValue>
 										</InfoItem>
 
@@ -426,11 +426,11 @@ const InfoValue = styled('span')(() => ({
 	fontWeight: 600,
 }))
 
-const DescriptionSection = styled(Box)(() => ({
-	display: 'flex',
-	flexDirection: 'column',
-	gap: '12px',
-}))
+// const DescriptionSection = styled(Box)(() => ({
+// 	display: 'flex',
+// 	flexDirection: 'column',
+// 	gap: '12px',
+// }))
 
 const SectionTitle = styled('h3')(() => ({
 	fontSize: '20px',
@@ -439,12 +439,12 @@ const SectionTitle = styled('h3')(() => ({
 	margin: 0,
 }))
 
-const DescriptionText = styled('p')(() => ({
-	fontSize: '14px',
-	color: '#495057',
-	lineHeight: 1.6,
-	margin: 0,
-}))
+// const DescriptionText = styled('p')(() => ({
+// 	fontSize: '14px',
+// 	color: '#495057',
+// 	lineHeight: 1.6,
+// 	margin: 0,
+// }))
 
 const ModulesSection = styled(Box)(() => ({
 	display: 'flex',
