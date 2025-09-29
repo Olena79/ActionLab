@@ -27,7 +27,7 @@ const InfoBlock2: React.FC = () => {
 				{texts.map((group, idx) => (
 					<StyledBlock11 key={idx}>
 						<img
-							src='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758098388/Ellipse_1_e87rcf.svg'
+							src='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1759157557/dfbgm4353_djeebm.png'
 							alt='Circle'
 							width={25}
 							height={25}
