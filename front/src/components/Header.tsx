@@ -1,7 +1,8 @@
 import React from 'react'
-import { styled, useMediaQuery } from '@mui/system'
+import { Box, styled, useMediaQuery } from '@mui/system'
 // import LanguageSwitcher from './../components/LanguageSwitcher'
 import ToSeminarsBtn from './auth/ToSeminarsBtn'
+import ButtonContained from './ButtonContained'
 
 const StyledHeader = styled('div')(({ theme }) => ({
 	display: 'flex',
@@ -21,11 +22,18 @@ const Header: React.FC = () => {
 				<img
 					src='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758004915/FullLogoDarkPurple_doveuj.png'
 					alt='Logo'
-					height={isMobile ? 70 : 90}
+					height={isMobile ? 50 : 90}
 				/>
 			</a>
 
-			<ToSeminarsBtn />
+			<Box sx={{ display: 'flex', gap: isMobile ? 1 : 2 }}>
+				<ButtonContained
+					sx={{ fontSize: isMobile ? 12 : 16 }}
+					pass='/about-us'
+					text='Про нас'
+				/>
+				<ToSeminarsBtn isMobile={isMobile} />
+			</Box>
 
 			{/* <LanguageSwitcher /> */}
 		</StyledHeader>

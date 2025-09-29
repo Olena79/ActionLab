@@ -7,6 +7,7 @@ import Footer from './components/Footer'
 import { AuthProvider } from './context/AuthContext'
 import { styled } from '@mui/material'
 import ProgramsPage from './pages/ProgramsPage'
+import AboutUsPage from './pages/AboutUsPage'
 
 const MainBox = styled('div')(({ theme }) => ({
 	backgroundColor: theme.palette.primary.main,
@@ -35,6 +36,7 @@ const App: React.FC = () => {
 							<Routes>
 								<Route path='/' element={<MainPage />} />
 								<Route path='/program' element={<ProgramsPage />} />
+								<Route path='/about-us' element={<AboutUsPage />} />
 							</Routes>
 
 							<Footer />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, MenuItem, Select, styled } from '@mui/material'
+import { Box, MenuItem, Select, styled, Typography } from '@mui/material'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getSeminars, Seminar } from '../actions/seminarActions'
 import { formatDate } from '../components/formatDate'
@@ -26,11 +26,12 @@ const ProgramsPage: React.FC = () => {
 		const fetchData = async () => {
 			try {
 				const data = await getSeminars()
-				setSeminars(data)
-				if (data.length > 0) {
+				const sorted = [...data].sort((a, b) => a._id.localeCompare(b._id))
+				setSeminars(sorted)
+				if (sorted.length > 0) {
 					setActiveIndex(0)
 					setSelectedDateIndex(0)
-					setSelectedSeminar({ ...data[0], selectedDate: data[0].dates[0] })
+					setSelectedSeminar({ ...sorted[0], selectedDate: sorted[0].dates[0] })
 				}
 			} catch (error) {
 				console.error(error)
@@ -71,6 +72,21 @@ const ProgramsPage: React.FC = () => {
 
 	return (
 		<PageWrapper>
+			<Typography
+				sx={{ textAlign: 'center', color: '#6C6D6F', fontWeight: 500 }}
+			>
+				Сценічний рух — це мистецтво вираження персонажа через пластику, жести
+				та динаміку тіла. На семінарі ви опануєте техніки розкріпачення,
+				координації та інтеграції руху в акторську гру.
+			</Typography>
+			<Box
+				sx={{ display: 'flex', justifyContent: 'center', width: '100%', mb: 2 }}
+			>
+				<p style={{ color: '#6C6D6F', fontWeight: 600, textAlign: 'center' }}>
+					Обирайте зручну дату, переглядайте деталі та записуйтеся на незабутній
+					досвід!
+				</p>
+			</Box>
 			<FolderContainer>
 				<TabsContainer>
 					{seminars.map((seminar, index) => (
@@ -270,8 +286,10 @@ const PageWrapper = styled(Box)(() => ({
 	padding: '40px 20px',
 	backgroundColor: '#f5f7fa',
 	display: 'flex',
+	flexDirection: 'column',
 	justifyContent: 'center',
 	alignItems: 'flex-start',
+	gap: 16,
 }))
 
 const FolderContainer = styled(Box)(() => ({
