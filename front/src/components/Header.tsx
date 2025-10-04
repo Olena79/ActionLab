@@ -20,19 +20,23 @@ const Header: React.FC = () => {
 		<StyledHeader>
 			<a href='/'>
 				<img
-					src='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758004915/FullLogoDarkPurple_doveuj.png'
+					src='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1759393922/LogoNew11_zfiiir.png'
 					alt='Logo'
-					height={isMobile ? 50 : 90}
+					height={isMobile ? 60 : 90}
 				/>
 			</a>
 
 			<Box sx={{ display: 'flex', gap: isMobile ? 1 : 2 }}>
+				<ToSeminarsBtn
+					icon='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1759335277/gm356ukt_vpnc7u.png'
+					text='сценічного руху'
+					isMobile={isMobile}
+				/>
 				<ButtonContained
 					sx={{ fontSize: isMobile ? 12 : 16 }}
 					pass='/about-us'
 					text='Про нас'
 				/>
-				<ToSeminarsBtn isMobile={isMobile} />
 			</Box>
 
 			{/* <LanguageSwitcher /> */}

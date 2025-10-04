@@ -1,23 +1,44 @@
 import { Request, Response } from 'express'
 import mongoose from 'mongoose'
 import { PaymentModel } from '../models/Payment'
-import { createMonobankInvoiceApi } from '../services/monobankService'
+import {
+  createMonobankInvoiceApi,
+  MonobankInvoicePayload,
+} from '../services/monobankService'
 import { UserModel } from '../models/User'
-import { sendPaymentSuccessEmail } from './emailController'
 import { format } from 'date-fns'
 import { transporter } from '../config/mailer'
+import { uk } from 'date-fns/locale'
+import { sendPaymentStatusEmail } from '../services/sendPaymentStatusEmail'
 
 export const createMonobankInvoice = async (
   req: Request,
   res: Response,
 ) => {
+  console.log('Контроллер стартував createMonobankInvoice')
   try {
     const {
       userId,
       seminarId,
+      seminarDate,
       amount,
       currency = 'UAH',
-    } = req.body
+    } = req.body as {
+      userId: string
+      seminarId: string
+      seminarDate: string
+      amount: number
+      currency?: string
+    }
+
+    const seminarDateObj = new Date(seminarDate)
+    if (isNaN(seminarDateObj.getTime())) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'invalid_date' })
+    }
+
+    console.log('Дані з фронту:', userId, seminarId, amount)
 
     // Перевірка ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId))
@@ -30,52 +51,98 @@ export const createMonobankInvoice = async (
         message: 'invalid_seminarId',
       })
 
-    // Беремо назву семінару для description
+    // Перевірка існування користувача
     const user = await UserModel.findById(userId)
-    const seminar = user?.seminars.find(
-      (s) => s._id?.toString() === seminarId,
-    )
-    const description = seminar
-      ? `Оплата за семінар: ${seminar.title}, сума: ${
-          amount / 100
-        } грн`
-      : `Оплата семінару, сума: ${amount / 100} грн`
-
-    // Виклик Monobank API
-    const invoice = await createMonobankInvoiceApi({
-      amount,
-      currency,
-      redirectUrl: `${process.env.CLIENT_URL}/?userId=${userId}&seminarId=${seminarId}`,
-      webhookUrl: `${process.env.SERVER_URL}/payments/monobank/webhook`,
-      description,
-    })
-
-    if (
-      !invoice.success ||
-      !invoice.invoiceUrl ||
-      !invoice.invoiceId
-    ) {
+    if (!user) {
       return res
-        .status(400)
-        .json({ success: false, message: 'monobank_error' })
+        .status(404)
+        .json({ success: false, message: 'user_not_found' })
     }
 
-    // Зберігаємо платіж у MongoDB
-    await PaymentModel.create({
-      userId: new mongoose.Types.ObjectId(userId),
-      seminarId: new mongoose.Types.ObjectId(seminarId),
+    console.log('Дані після перевірки:', userId, seminarId)
+
+    // Генеруємо унікальний orderId
+    const orderId = new mongoose.Types.ObjectId().toString()
+
+    // Payload для Monobank
+    const webhookUrl =
+      process.env.BACKEND_PUBLIC_URL ||
+      `${process.env.WEBHOOK_NGROK_URL}/payments/monobank/webhook`
+
+    const monobankPayload: MonobankInvoicePayload = {
+      amount,
+      ccy: 980,
+      redirectUrl: `${
+        process.env.FRONTEND_URL || 'http://localhost:3000'
+      }/payment-success?paymentId=${orderId}`,
+      webHookUrl: webhookUrl,
+      merchantPaymInfo: {
+        description: `Оплата семінару (ID: ${seminarId})`,
+        orderId,
+      },
+    }
+
+    console.log('Підготовка інвойсу:', monobankPayload)
+
+    // Виклик Monobank API
+    const apiResponse = await createMonobankInvoiceApi(
+      monobankPayload,
+    )
+    console.log('Відповідь Monobank API:', apiResponse)
+
+    // Перевіряємо валідність відповіді
+    if (
+      !apiResponse.success ||
+      !apiResponse.invoiceId ||
+      !apiResponse.invoiceUrl
+    ) {
+      console.error(
+        '❌ Mono API error:',
+        apiResponse.message,
+        apiResponse.raw,
+      )
+      return res.status(400).json({
+        success: false,
+        message: apiResponse.message || 'monobank_error',
+        raw: apiResponse.raw,
+      })
+    }
+
+    // Перевірка дублю
+    const already = await PaymentModel.findOne({
+      $or: [
+        { invoiceId: apiResponse.invoiceId },
+        { orderId },
+      ],
+    })
+    if (already) {
+      return res.json({
+        success: true,
+        invoiceId: already.invoiceId,
+        invoiceUrl: already.invoiceUrl,
+        paymentId: already._id.toString(),
+      })
+    }
+
+    // Створюємо платіж
+    const payment = new PaymentModel({
+      userId,
+      seminarId,
       amount,
       currency,
-      invoiceId: invoice.invoiceId,
-      invoiceUrl: invoice.invoiceUrl,
       status: 'pending',
+      seminarDate: seminarDateObj,
+      invoiceId: apiResponse.invoiceId,
+      invoiceUrl: apiResponse.invoiceUrl,
+      orderId,
     })
+    await payment.save()
 
-    // Повертаємо на фронт invoiceId і invoiceUrl
-    res.json({
+    return res.json({
       success: true,
-      invoiceId: invoice.invoiceId,
-      invoiceUrl: invoice.invoiceUrl,
+      invoiceId: apiResponse.invoiceId,
+      invoiceUrl: apiResponse.invoiceUrl,
+      paymentId: payment._id.toString(),
     })
   } catch (err) {
     console.error('❌ Помилка створення інвойсу:', err)
@@ -85,94 +152,218 @@ export const createMonobankInvoice = async (
   }
 }
 
-export const handleMonobankWebhook = async (
+interface MonobankWebhookPayload {
+  invoiceId: string
+  status: 'success' | 'failure' | 'created' | 'processing'
+  modifiedDate: string
+}
+
+export const monobankWebhook = async (
   req: Request,
   res: Response,
 ) => {
+  console.log(
+    '🔔 Webhook received:',
+    JSON.stringify(req.body, null, 2),
+  )
   try {
-    const { invoiceId, status } = req.body
-    if (!invoiceId) return res.sendStatus(400)
-
-    if (status === 'success') {
-      const payment = await PaymentModel.findOneAndUpdate(
-        { invoiceId },
-        { status: 'success' },
-        { new: true },
-      )
-
-      if (payment) {
-        const user = await UserModel.findById(
-          payment.userId,
-        )
-        if (user) {
-          const seminar = user.seminars.find(
-            (s) =>
-              s._id?.toString() ===
-              payment.seminarId.toString(),
-          )
-
-          if (seminar) {
-            // ✅ оновлюємо статус оплати
-            seminar.isPaid = true
-            await user.save()
-
-            // ✅ надсилаємо лист
-            await sendPaymentSuccessEmail(
-              user.email,
-              seminar,
-            )
-          }
-        }
-      }
-    } else if (status === 'failed') {
-      await PaymentModel.findOneAndUpdate(
-        { invoiceId },
-        { status: 'failed' },
-      )
+    if (!req.body || Object.keys(req.body).length === 0) {
+      console.error('❌ Webhook payload is empty')
+      return res
+        .status(400)
+        .json({ success: false, message: 'empty_payload' })
     }
 
-    res.sendStatus(200)
+    const { invoiceId, status } =
+      req.body as MonobankWebhookPayload
+    if (!invoiceId || !status) {
+      return res.status(400).json({
+        success: false,
+        message: 'invalid_payload',
+      })
+    }
+
+    // Знаходимо платіж по invoiceId (це має бути у payment.invoiceId)
+    const payment = await PaymentModel.findOne({
+      invoiceId,
+    })
+    if (!payment) {
+      console.warn(
+        '❌ Webhook: payment not found for invoiceId',
+        invoiceId,
+      )
+      return res.status(404).json({
+        success: false,
+        message: 'payment_not_found',
+      })
+    }
+
+    // Якщо статус не змінився — просто відповідаємо 200 (idempotency)
+    if (
+      payment.status === mapMonoStatusToInternal(status)
+    ) {
+      console.log(
+        'Webhook: статус не змінився, нічого не робимо',
+      )
+      return res.status(200).json({ success: true })
+    }
+
+    // Оновлюємо статус платежу
+    payment.status = mapMonoStatusToInternal(status)
+    await payment.save()
+    console.log(
+      'Webhook: payment updated:',
+      payment._id.toString(),
+      payment.status,
+    )
+
+    // Якщо успішний платіж — оновлюємо user.seminars.isPaid та надсилаємо email (один раз)
+    if (payment.status === 'success') {
+      // оновлюємо user семінар (шукаємо по seminars.seminarId)
+      const updateResult = await UserModel.updateOne(
+        {
+          _id: payment.userId,
+          'seminars.seminarId': payment.seminarId,
+          'seminars.date': payment.seminarDate,
+        },
+        { $set: { 'seminars.$.isPaid': true } },
+      )
+      console.log(
+        'Webhook: user seminar update result:',
+        updateResult,
+      )
+
+      // Забираємо користувача і семінар для емейлу (якщо потрібно)
+      const user = await UserModel.findById(payment.userId)
+      const seminar = user?.seminars.find(
+        (s) =>
+          s.seminarId?.toString() ===
+          String(payment.seminarId),
+      )
+
+      if (user && seminar) {
+        try {
+          await sendPaymentStatusEmail(
+            {
+              body: {
+                userData: {
+                  firstName: user.firstName,
+                  lastName: user.lastName,
+                  email: user.email,
+                },
+                seminarData: {
+                  title: seminar.title,
+                  date: seminar.date,
+                },
+                status: 'success',
+              },
+            } as Request,
+            {
+              status: () => ({ json: () => null }),
+            } as unknown as Response,
+          )
+          console.log('Webhook: payment status email sent')
+        } catch (errEmail) {
+          console.error(
+            'Webhook: error sending status email:',
+            errEmail,
+          )
+        }
+      }
+    }
+
+    return res.status(200).json({ success: true })
   } catch (err) {
-    console.error('❌ Webhook error:', err)
-    res.sendStatus(500)
+    console.error('❌ Помилка в webhook:', err)
+    return res
+      .status(500)
+      .json({ success: false, message: 'server_error' })
   }
+}
+
+function mapMonoStatusToInternal(
+  status: string,
+): 'pending' | 'success' | 'failed' {
+  if (status === 'success') return 'success'
+  if (status === 'failure') return 'failed'
+  // created/processing -> pending
+  return 'pending'
 }
 
 export const getPaymentStatus = async (
   req: Request,
   res: Response,
 ) => {
+  console.log('getPaymentStatus starts')
   try {
-    const { userId, seminarId } = req.query
-
-    if (!userId || !seminarId)
-      return res
-        .status(400)
-        .json({ success: false, message: 'missing_params' })
-
-    const user = await UserModel.findById(userId)
-    if (!user)
-      return res
-        .status(404)
-        .json({ success: false, message: 'user_not_found' })
-
-    const seminar = user.seminars.find(
-      (s) => s._id?.toString() === seminarId,
-    )
-    if (!seminar)
-      return res.status(404).json({
+    const param = req.params.paymentId
+    if (!param)
+      return res.status(400).json({
         success: false,
-        message: 'seminar_not_found',
+        message: 'missing_paymentId',
       })
 
-    res.json({
+    let payment = null
+
+    // 1) Якщо валідний ObjectId — шукаємо по _id
+    if (mongoose.Types.ObjectId.isValid(param)) {
+      payment = await PaymentModel.findById(param)
+      console.log(
+        'getPaymentStatus: found by _id:',
+        !!payment,
+      )
+    }
+
+    // 2) Якщо не знайдено — шукаємо по orderId
+    if (!payment) {
+      payment = await PaymentModel.findOne({
+        orderId: param,
+      })
+      console.log(
+        'getPaymentStatus: found by orderId:',
+        !!payment,
+      )
+    }
+
+    // 3) Якщо ще не знайдено — шукаємо по invoiceId
+    if (!payment) {
+      payment = await PaymentModel.findOne({
+        invoiceId: param,
+      })
+      console.log(
+        'getPaymentStatus: found by invoiceId:',
+        !!payment,
+      )
+    }
+
+    if (!payment) {
+      return res.status(404).json({
+        success: false,
+        message: 'payment_not_found',
+      })
+    }
+
+    // Повертаємо зручний payload фронту
+    return res.json({
       success: true,
-      isPaid: seminar.isPaid,
-      title: seminar.title,
+      payment: {
+        _id: payment._id,
+        status: payment.status,
+        amount: payment.amount,
+        currency: payment.currency,
+        userId: payment.userId,
+        seminarId: payment.seminarId,
+        invoiceId: payment.invoiceId,
+        invoiceUrl: payment.invoiceUrl,
+        orderId: payment.orderId,
+        createdAt: payment.createdAt,
+        updatedAt: payment.updatedAt,
+        isPaid: payment.status === 'success',
+      },
     })
   } catch (err) {
-    console.error(err)
-    res
+    console.error('getPaymentStatus error', err)
+    return res
       .status(500)
       .json({ success: false, message: 'server_error' })
   }
@@ -180,34 +371,58 @@ export const getPaymentStatus = async (
 
 //==================================================
 
-interface TempPaymentPayload {
+interface EmailPaymentPayload {
   userData: {
+    _id?: string
     firstName: string
     lastName: string
     phone: string
     email: string
   }
   seminarData: {
+    _id?: string
     title: string
     date: string
   }
+  invoiceUrl: string | null
 }
 
-export const sendTempPaymentEmail = async (
+export const sendPaymentEmail = async (
   req: Request,
   res: Response,
 ) => {
   try {
-    const { userData, seminarData } =
-      req.body as TempPaymentPayload
+    const { userData, seminarData, invoiceUrl } =
+      req.body as EmailPaymentPayload
+
+    console.log(
+      'З пошти: ',
+      userData,
+      seminarData,
+      invoiceUrl,
+    )
+
+    if (!userData || !seminarData || !invoiceUrl) {
+      return res.status(400).json({
+        success: false,
+        message:
+          'Missing userData or seminarData or invoiceUrl',
+      })
+    }
 
     const seminarDate = new Date(seminarData.date)
     const nextDay = new Date(seminarDate)
     nextDay.setDate(nextDay.getDate() + 1)
 
     // Форматування дат у вигляді "дд.мм.рррр"
-    const formattedDate = format(seminarDate, 'dd.MM.yyyy')
-    const formattedNextDay = format(nextDay, 'dd.MM.yyyy')
+    const formattedDate = format(
+      seminarDate,
+      'dd.MM.yyyy',
+      { locale: uk },
+    )
+    const formattedNextDay = format(nextDay, 'dd.MM.yyyy', {
+      locale: uk,
+    })
 
     const mailOptions = {
       from: `"ActionLab" <${process.env.SMTP_USER}>`,
@@ -216,14 +431,27 @@ export const sendTempPaymentEmail = async (
       html: `
         <p>Вітаємо, <b>${userData.firstName} ${userData.lastName}</b>!</p>
         <br />
-        <p>Ви успішно зареєстровані на семінар: <b>${seminarData.title}</b></p>
+        <p>Ваш запис на семінар <b>${seminarData.title}</b> успішно підтверджений</p>
         <br />
         <p>Дати проведення: <b>${formattedDate} - ${formattedNextDay}</b></p>
         <br />
-        <p>Будь ласка, здійсніть оплату на карту: <b>4149609017911431</b></p>
-        <p>Отримувач: <b>Безверхній Андрій</b></p>
+        <p>Для завершення реєстрації, будь ласка, здійсніть оплату, натиснувши кнопку нижче:</p>
         <br />
-        <p>Термін оплати: до <b>${formattedDate}</b></p>
+        <a href="${invoiceUrl}" target="_blank" style="
+          display:inline-block;
+          padding:12px 20px;
+          background:#4CAF50;
+          color:white;
+          text-decoration:none;
+          border-radius:8px;
+          font-weight:bold;
+        ">
+          Сплатити
+        </a>
+        <br /><br />
+        
+        <br />
+        <p><b></b>Термін оплати: 24 години.</b> Якщо вам не вистачило часу, і платіж вже прострочений, повідомте нас за допомогою посилань нижче</b></p>
         <br />
         <p>Дякуємо за довіру! Чекаємо на вас на семінарі.</p>
         <br />
@@ -233,7 +461,8 @@ export const sendTempPaymentEmail = async (
       `,
     }
 
-    await transporter.sendMail(mailOptions)
+    const info = await transporter.sendMail(mailOptions)
+    console.log('✅ Лист надіслано:', info.messageId)
 
     return res.status(200).json({
       success: true,

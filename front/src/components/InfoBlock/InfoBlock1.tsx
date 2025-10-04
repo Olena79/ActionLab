@@ -107,7 +107,7 @@ const StyledImageWrapper = styled('div')<StyledImageWrapperProps>(
 		'@media (max-width: 600px)': {
 			// Для мобильной - позиционирование слева-справа-слева
 			alignSelf: position === 'left' ? 'flex-start' : 'flex-end',
-			'&:not(:first-child)': {
+			'&:not(:first-of-type)': {
 				marginTop: position === 'right' ? '-50px' : '0',
 			},
 			'&:last-child': {

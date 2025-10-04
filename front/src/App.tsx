@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext'
 import { styled } from '@mui/material'
 import ProgramsPage from './pages/ProgramsPage'
 import AboutUsPage from './pages/AboutUsPage'
+import PaymentResultPage from './pages/PaymentResultPage'
 
 const MainBox = styled('div')(({ theme }) => ({
 	backgroundColor: theme.palette.primary.main,
@@ -37,6 +38,10 @@ const App: React.FC = () => {
 								<Route path='/' element={<MainPage />} />
 								<Route path='/program' element={<ProgramsPage />} />
 								<Route path='/about-us' element={<AboutUsPage />} />
+								<Route
+									path='/payment-success'
+									element={<PaymentResultPage />}
+								/>
 							</Routes>
 
 							<Footer />

@@ -1,5 +1,8 @@
 export interface IUserSeminar {
-	seminarId: string
+	_id?: string
+	title: string
+	description?: string
+	date: Date
 	isPaid: boolean
 }
 

@@ -15,6 +15,7 @@ export interface RegisterSeminarPayload {
 	phone: string
 	email: string
 	isPaid: boolean
+	seminarId: string
 }
 
 export interface InfoMessage {
@@ -27,9 +28,16 @@ export interface InfoMessage {
 	showPayButton?: boolean
 	onPay?: () => void
 	userData?: {
+		_id?: string
 		firstName: string
 		lastName: string
 		phone: string
 		email: string
 	}
+	seminarData?: {
+		_id?: string
+		title: string
+		date: string
+	}
+	userId?: string
 }

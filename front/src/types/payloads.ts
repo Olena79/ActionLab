@@ -1,6 +1,7 @@
 import { IUser } from './user'
 
 export interface RegisterSeminarPayload {
+	seminarId: string
 	title: string
 	date: string
 	firstName: string

@@ -1,11 +1,13 @@
 import { Request, Response } from 'express'
 import { UserModel } from '../models/User'
+import mongoose from 'mongoose'
 // import {
 //   scheduleDelayedPaymentEmail,
 //   scheduleEmailWithoutPayment,
 // } from './emailController'
 
 interface RegisterSeminarPayload {
+  seminarId: string
   title: string
   date: string // ISO string
   firstName: string
@@ -21,6 +23,7 @@ export const registerUser = async (
   try {
     const payload = req.body as RegisterSeminarPayload
     const {
+      seminarId,
       title,
       date,
       firstName,
@@ -28,6 +31,7 @@ export const registerUser = async (
       phone,
       email,
     } = payload
+    const seminarDate = new Date(date)
 
     const userByEmail = await UserModel.findOne({ email })
     const userByPhone = await UserModel.findOne({ phone })
@@ -62,12 +66,11 @@ export const registerUser = async (
     }
 
     let user = userByEmail || userByPhone || null
-    const seminarDate = new Date(date)
 
     if (user) {
       const alreadyRegistered = user.seminars.some(
         (s) =>
-          s.title === title &&
+          s.seminarId?.toString() === seminarId &&
           new Date(s.date).getTime() ===
             seminarDate.getTime(),
       )
@@ -80,6 +83,7 @@ export const registerUser = async (
       }
 
       user.seminars.push({
+        seminarId: new mongoose.Types.ObjectId(seminarId),
         title,
         date: seminarDate,
         isPaid: false,
@@ -91,7 +95,14 @@ export const registerUser = async (
         phone,
         email,
         seminars: [
-          { title, date: seminarDate, isPaid: false },
+          {
+            seminarId: new mongoose.Types.ObjectId(
+              seminarId,
+            ),
+            title,
+            date: seminarDate,
+            isPaid: false,
+          },
         ],
         language: 'ua',
       })
@@ -105,6 +116,15 @@ export const registerUser = async (
           seminarDate.getTime(),
     )
 
+    console.log(
+      'Підготовка семінару для відповіді фронту: ',
+      seminar,
+    )
+    console.log(
+      'Підготовка юзера для відповіді фронту: ',
+      savedUser,
+    )
+
     if (!seminar) {
       return res.status(200).json({
         success: false,
@@ -112,18 +132,24 @@ export const registerUser = async (
       })
     }
 
-    // Заплануємо лист
-    // await scheduleDelayedPaymentEmail(
-    //   savedUser._id.toString(),
-    //   seminar._id!.toString(),
-    //   40000, // тут підстав суму в копійках
-    // )
-
     // Успіх
     return res.status(200).json({
       success: true,
       message: 'registered',
       userId: savedUser._id,
+      seminar: {
+        _id: seminar.seminarId,
+        title: seminar.title,
+        date: seminar.date,
+        isPaid: seminar.isPaid,
+      },
+      user: {
+        _id: savedUser._id,
+        firstName: savedUser.firstName,
+        lastName: savedUser.lastName,
+        phone: savedUser.phone,
+        email: savedUser.email,
+      },
     })
   } catch (err: unknown) {
     console.error('❌ Помилка реєстрації на семінар:', err)

@@ -4,7 +4,7 @@ import { InfoMessage, ISeminar } from '../../types/seminar'
 import { useTranslation } from '../../translation/TranslationContext'
 import { registerUser } from '../../actions/authActions'
 import ButtonContained from '../ButtonContained'
-// import { createMonobankInvoice } from '../../actions/monobank'
+
 import { TextInput } from './SeminarSelect'
 
 interface SeminarRegModalProps {
@@ -56,6 +56,7 @@ const SeminarRegModal: React.FC<SeminarRegModalProps> = ({
 
 		try {
 			const response = await registerUser({
+				seminarId: seminar._id,
 				title: seminar.title,
 				date: seminar.selectedDate!.date,
 				isPaid: false,
@@ -64,6 +65,7 @@ const SeminarRegModal: React.FC<SeminarRegModalProps> = ({
 				phone,
 				email,
 			})
+			console.log('Передача юзера з беку: ', response)
 
 			switch (response.message) {
 				case 'registered':
@@ -72,32 +74,18 @@ const SeminarRegModal: React.FC<SeminarRegModalProps> = ({
 						message1: t('registerModalMessages.success.message1'),
 						message2: t('registerModalMessages.success.message2'),
 						showPayButton: true,
-						onPay: () => {},
-						userData: { firstName, lastName, phone, email },
-						// onPay: async () => {
-						// 	try {
-						// 		const invoice = await createMonobankInvoice({
-						// 			userId: response.userId,
-						// 			seminarId: seminar._id,
-						// 			amount: 400000, // 4000 грн у копійках
-						// 			currency: 'UAH',
-						// 		})
-
-						// 		if (invoice.success && invoice.invoiceUrl) {
-						// 			window.location.href = invoice.invoiceUrl
-						// 		} else {
-						// 			alert('Error Payment')
-						// 		}
-						// 	} catch (err) {
-						// 		console.error(err)
-						// 		onSuccess({
-						// 			title: t('payment.error.title'),
-						// 			message1: t('payment.error.message1'),
-						// 			message2: t('payment.error.message2'),
-						// 			showPayButton: false,
-						// 		})
-						// 	}
-						// },
+						userId: response.userId,
+						userData: {
+							firstName,
+							lastName,
+							phone,
+							email,
+						},
+						seminarData: {
+							_id: response.seminarId || response.seminar?._id || seminar._id,
+							title: response.seminar?.title || seminar.title,
+							date: response.seminar?.date || seminar.selectedDate!.date,
+						},
 					})
 					break
 

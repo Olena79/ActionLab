@@ -2,21 +2,21 @@ import { Router } from 'express'
 import {
   createMonobankInvoice,
   getPaymentStatus,
-  handleMonobankWebhook,
-  sendTempPaymentEmail,
+  monobankWebhook,
+  sendPaymentEmail,
 } from '../controllers/paymentController'
 import { createInvoiceValidator } from '../validators/paymentValidator'
 
 const router = Router()
 
 router.post(
-  '/monobank',
+  '/create-monobank-invoice',
   createInvoiceValidator,
   createMonobankInvoice,
 )
 
-router.post('/monobank/webhook', handleMonobankWebhook)
-router.get('/status', getPaymentStatus)
-router.post('/sendTempPaymentEmail', sendTempPaymentEmail)
+router.post('/monobank/webhook', monobankWebhook)
+router.get('/status/:paymentId', getPaymentStatus)
+router.post('/sendPaymentEmail', sendPaymentEmail)
 
 export default router

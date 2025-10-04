@@ -7,7 +7,6 @@ import ModulesSectionElem from '../components/ModulesSectionElem'
 import { InfoMessage, ISeminar } from '../types/seminar'
 import SeminarRegModal from '../components/auth/SeminarRegModal'
 import ConfirmModal from '../components/ConfirmModal'
-import TempPayModal from '../components/TempPayModal'
 
 const colors = ['#ff6b6b', '#4ecdc4', '#ff9f1c', '#6c82fdff', '#1a535c']
 
@@ -19,7 +18,7 @@ const ProgramsPage: React.FC = () => {
 	const [openModal, setOpenModal] = useState(false)
 	const [selectedSeminar, setSelectedSeminar] = useState<ISeminar | null>(null)
 	const [infoMsg, setInfoMsg] = useState<InfoMessage | null>(null)
-	const [openTempPayModal, setOpenTempPayModal] = useState(false)
+
 	const [showConfirm, setShowConfirm] = useState(false)
 
 	useEffect(() => {
@@ -64,8 +63,8 @@ const ProgramsPage: React.FC = () => {
 		setOpenModal(true)
 	}
 
-	const handleSuccess = (msg: InfoMessage) => {
-		setInfoMsg(msg)
+	const handleSuccess = (info: InfoMessage) => {
+		setInfoMsg(info)
 		setShowConfirm(true)
 		setOpenModal(false)
 	}
@@ -236,42 +235,11 @@ const ProgramsPage: React.FC = () => {
 				message1={infoMsg?.message1 ?? ''}
 				message2={infoMsg?.message2 ?? ''}
 				showPayButton={infoMsg?.showPayButton ?? false}
-				onPay={() => {
-					setShowConfirm(false)
-					setOpenTempPayModal(true)
-				}}
 				onClose={() => setShowConfirm(false)}
 				userData={infoMsg?.userData}
-				seminarData={
-					selectedSeminar
-						? {
-								title: selectedSeminar.title,
-								date: selectedSeminar.selectedDate!.date,
-						  }
-						: undefined
-				}
+				seminarData={infoMsg?.seminarData}
+				userId={infoMsg?.userId}
 			/>
-
-			{openTempPayModal && selectedSeminar && infoMsg?.userData && (
-				<TempPayModal
-					open={openTempPayModal}
-					title='Дякуємо за ваш вибір!'
-					message1='Ми працюємо над удосконаленням системи автоматичної оплати, тому просимо вас тимчасово скористатися альтернативним способом розрахунку.'
-					message2='Усі деталі щодо семінару, включаючи реквізити для оплати та додaткову інформацію, ми надіслали на вашу електронну пошту.'
-					onClose={() => setOpenTempPayModal(false)}
-					title2='Будь ласка, здійсніть оплату на карту:  '
-					subTitle2='4149 6090 1791 1431'
-					title3={`Термін оплати: до ${formatDate(
-						selectedSeminar.selectedDate!.date
-					)}`}
-					title4='Дякуємо за розуміння та довіру!'
-					userData={infoMsg.userData}
-					seminarData={{
-						title: selectedSeminar.title,
-						date: selectedSeminar.selectedDate!.date,
-					}}
-				/>
-			)}
 		</PageWrapper>
 	)
 }

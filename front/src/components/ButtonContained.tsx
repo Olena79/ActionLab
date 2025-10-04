@@ -8,6 +8,7 @@ interface ButtonContainedProps {
 	disabled?: boolean
 	sx?: SxProps<Theme> | undefined
 	onClick?: () => void
+	icon?: string
 }
 
 const ButtonContained: React.FC<ButtonContainedProps> = ({
@@ -17,10 +18,20 @@ const ButtonContained: React.FC<ButtonContainedProps> = ({
 	disabled,
 	sx,
 	onClick,
+	icon,
 }) => {
 	return (
 		<>
 			<StyledButton disabled={disabled} type={type} onClick={onClick} sx={sx}>
+				{icon && (
+					<img
+						style={{ marginRight: 6 }}
+						src={icon}
+						alt='Img'
+						width={26}
+						height={26}
+					/>
+				)}
 				<StyledLink href={pass}>{text}</StyledLink>
 			</StyledButton>
 		</>
