@@ -7,8 +7,8 @@ export interface MonobankInvoicePayload {
   webHookUrl: string // URL для webhook
   merchantPaymInfo: {
     // Обов'язково
-    description: string // опис платежу
-    orderId: string // унікальний ID (e.g., payment._id)
+    destination: string // опис платежу
+    reference: string // унікальний ID (e.g., payment._id)
   }
   validity?: number // секунди, default 24h
   paymentType?: 'debit' | 'hold' // default 'debit'
@@ -44,10 +44,10 @@ export const createMonobankInvoiceApi = async (
           webHookUrl: payload.webHookUrl,
           validity: payload.validity || 259200, // 24h * 3
           merchantPaymInfo: {
-            description:
-              payload.merchantPaymInfo?.description ||
+            destination:
+              payload.merchantPaymInfo?.destination ||
               'Оплата семінару',
-            orderId: payload.merchantPaymInfo?.orderId,
+            reference: payload.merchantPaymInfo?.reference,
           },
         }),
       },

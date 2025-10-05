@@ -72,14 +72,19 @@ export const createMonobankInvoice = async (
     const monobankPayload: MonobankInvoicePayload = {
       amount,
       ccy: 980,
+      merchantPaymInfo: {
+        reference: orderId,
+        destination: `Оплата семінару (ID: ${seminarId})`,
+      },
       redirectUrl: `${
         process.env.FRONTEND_URL || 'http://localhost:3000'
       }/payment-success?paymentId=${orderId}`,
-      webHookUrl: webhookUrl,
-      merchantPaymInfo: {
-        description: `Оплата семінару (ID: ${seminarId})`,
-        orderId,
-      },
+      webHookUrl: `${
+        process.env.BACKEND_URL ||
+        'https://actionlab.onrender.com'
+      }/payments/monobank/webhook`,
+      validity: 3600,
+      paymentType: 'debit',
     }
 
     console.log('Підготовка інвойсу:', monobankPayload)
