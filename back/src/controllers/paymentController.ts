@@ -396,6 +396,7 @@ export const sendPaymentEmail = async (
   req: Request,
   res: Response,
 ) => {
+  console.log('Контроллер пошти стартував')
   try {
     const { userData, seminarData, invoiceUrl } =
       req.body as EmailPaymentPayload

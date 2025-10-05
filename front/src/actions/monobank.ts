@@ -121,13 +121,15 @@ export const sendPaymentEmail = async (
 	payload: TempPaymentPayload
 ): Promise<TempPaymentResponse> => {
 	try {
+		console.log('Запит пішов')
 		const response = await api.post<TempPaymentResponse>(
 			'/payments/sendPaymentEmail',
 			payload
 		)
+		console.log('Запит прийшов')
 		return response.data
 	} catch (error: any) {
-		console.error('❌ Помилка відправки тимчасового листа:', error)
+		console.error('❌ Помилка відправки платіжного листа:', error)
 		return {
 			success: false,
 			message: error?.response?.data?.message || 'network_error',

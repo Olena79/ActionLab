@@ -105,7 +105,7 @@ const ConfirmModal: React.FC<ConfirmationModalProps> = ({
 		try {
 			if (userData && seminarData && invoiceUrl) {
 				console.log(
-					'Передача юзера і семінара з модалки в модалку: ',
+					'Передача юзера, семінара і invoiceUrl з модалки: ',
 					userData,
 					seminarData,
 					invoiceUrl
