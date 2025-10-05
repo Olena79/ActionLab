@@ -7,7 +7,7 @@ import {
 } from '../services/monobankService'
 import { UserModel } from '../models/User'
 import { format } from 'date-fns'
-import { transporter } from '../config/mailer'
+import { sgMail } from '../config/mailer'
 import { uk } from 'date-fns/locale'
 import { sendPaymentStatusEmail } from '../services/sendPaymentStatusEmail'
 
@@ -431,7 +431,10 @@ export const sendPaymentEmail = async (
     })
 
     const mailOptions = {
-      from: `"ActionLab" <${process.env.SMTP_USER}>`,
+      from: {
+        email: process.env.SMTP_USER!,
+        name: 'ActionLab',
+      },
       to: userData.email,
       subject: `Реєстрація на семінар: ${seminarData.title}`,
       html: `
@@ -467,8 +470,8 @@ export const sendPaymentEmail = async (
       `,
     }
 
-    const info = await transporter.sendMail(mailOptions)
-    console.log('✅ Лист надіслано:', info.messageId)
+    await sgMail.send(mailOptions)
+    console.log('✅ Лист надіслано:')
 
     return res.status(200).json({
       success: true,

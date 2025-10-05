@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { transporter } from '../config/mailer'
+import { sgMail } from '../config/mailer'
 import { format } from 'date-fns'
 import { uk } from 'date-fns/locale'
 
@@ -76,8 +76,11 @@ export const sendPaymentStatusEmail = async (
         <b><a href="${process.env.FACEBOOK_URL}" target="_blank" rel="noopener noreferrer">Facebook</a></b>
       `
 
-    await transporter.sendMail({
-      from: `"ActionLab" <${process.env.SMTP_USER}>`,
+    await sgMail.send({
+      from: {
+        email: process.env.SMTP_USER!,
+        name: 'ActionLab',
+      },
       to: userData.email,
       subject,
       html,

@@ -12,6 +12,7 @@
     "@cloudinary/react": "^1.14.1",
     "@cloudinary/url-gen": "^1.21.0",
     "@nestjs/typeorm": "^11.0.0",
+    "@sendgrid/mail": "^8.1.6",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.5",
     "bcryptjs": "^3.0.2",

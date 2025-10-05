@@ -1,14 +1,16 @@
-import nodemailer from 'nodemailer'
+import sgMail from '@sendgrid/mail'
 import dotenv from 'dotenv'
 
 dotenv.config()
 
-export const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-})
+// Ініціалізація SendGrid
+const apiKey = process.env.SENDGRID_API_KEY
+
+if (!apiKey) {
+  console.error('❌ SENDGRID_API_KEY не знайдено в .env')
+} else {
+  sgMail.setApiKey(apiKey)
+  console.log('✅ SendGrid ініціалізовано')
+}
+
+export { sgMail }
