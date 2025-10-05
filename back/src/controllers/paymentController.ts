@@ -466,7 +466,7 @@ export const sendPaymentEmail = async (
         <br />
         <b><a href="${process.env.CLIENT_URL}" target="_blank" rel="noopener noreferrer">Сайт</a></b>&nbsp;&nbsp;
         <b><a href="${process.env.INSTA_URL}" target="_blank" rel="noopener noreferrer">Instagram</a></b>&nbsp;&nbsp;
-        <b><a href="${process.env.FACEBOOK_URL}" target="_blank" rel="noopener noreferrer">Facebook</a></b>
+        <b><a href="${process.env.TELEGRAM_URL}" target="_blank" rel="noopener noreferrer">Telegram</a></b>
       `,
     }
 
