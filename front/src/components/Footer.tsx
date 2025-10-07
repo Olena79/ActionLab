@@ -18,7 +18,7 @@ const Footer: React.FC = () => {
 		<StyledFooter>
 			<Box sx={{ display: 'flex', gap: 6, justifyContent: 'center', mb: 2 }}>
 				<a
-					href='https://www.instagram.com/actionlabcourse?igsh=MWF5c3ZhNXg3aHdqZQ%3D%3D&utm_source=qr'
+					href='https://www.instagram.com/actionlabcourse?igsh=c29hYnh2c2todWpq'
 					target='_blank'
 					rel='noopener noreferrer'
 				>
@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
 					/>
 				</a>
 				<a
-					href='https://t.me/+ABCDEFGH1234'
+					href='https://t.me/action_lab_seminars'
 					target='_blank'
 					rel='noopener noreferrer'
 				>
