@@ -36,6 +36,7 @@ const ImageCarousel: React.FC<ImagesProps> = ({ images }) => {
 						src={src}
 						offset={offset}
 						visibleCount={visibleCount}
+						loading='lazy'
 					/>
 				)
 			})}

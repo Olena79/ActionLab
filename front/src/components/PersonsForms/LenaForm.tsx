@@ -163,20 +163,14 @@ const LenaForm: React.FC = () => {
 							<EasyLi2 text1='«Мішки»' text2='' text3='спів. Маняша' />
 						</StyledUl>
 
-						<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-							<Box
-								sx={{
-									padding: 1,
-									width: '100%',
-									border: '3px solid #6C6D6F',
-									backgroundColor: '#F5DD47',
-									borderRadius: 4,
-									maxWidth: 600,
-								}}
-							>
+						<StyledVideoBox>
+							<StyledVideoItemBox>
+								<YouTubePlayer videoUrl='https://youtu.be/1g-dqu0-LxI' />
+							</StyledVideoItemBox>
+							<StyledVideoItemBox>
 								<YouTubePlayer videoUrl='https://youtu.be/yPGLCX6dd5M' />
-							</Box>
-						</Box>
+							</StyledVideoItemBox>
+						</StyledVideoBox>
 
 						<StyledButton
 							sx={{ padding: 2 }}
@@ -243,6 +237,24 @@ const StyledButton = styled('button')(() => ({
 	gap: 20,
 	justifyContent: 'center',
 	alignItems: 'center',
+}))
+
+const StyledVideoItemBox = styled(Box)(({ theme }) => ({
+	padding: 6,
+	width: '100%',
+	border: `3px solid ${theme.palette.primary.main}`,
+	backgroundColor: theme.palette.secondary.main,
+	borderRadius: 12,
+	maxWidth: 600,
+}))
+
+const StyledVideoBox = styled(Box)(() => ({
+	display: 'flex',
+	justifyContent: 'center',
+	gap: 6,
+	'@media (max-width: 600px)': {
+		flexDirection: 'column',
+	},
 }))
 
 //==============================================
