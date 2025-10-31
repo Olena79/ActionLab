@@ -1,7 +1,6 @@
 export interface CreateInvoicePayload {
+	membershipId: string
 	userId: string
-	seminarId: string
-	seminarDate: string
 	amount: number // в копійках (наприклад, 500 грн = 50000)
 	currency?: string // за замовчуванням UAH
 }

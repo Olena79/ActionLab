@@ -14,7 +14,4 @@ export const registerUserValidator = [
     .matches(/^[0-9+\-\s]{7,}$/)
     .withMessage('Invalid phone'),
   body('email').isEmail().withMessage('Invalid email'),
-  body('seminar')
-    .notEmpty()
-    .withMessage('Seminar is required'),
 ]

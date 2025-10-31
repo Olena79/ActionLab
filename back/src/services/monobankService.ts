@@ -46,7 +46,7 @@ export const createMonobankInvoiceApi = async (
           merchantPaymInfo: {
             destination:
               payload.merchantPaymInfo?.destination ||
-              'Оплата семінару',
+              'Оплата абонементу',
             reference: payload.merchantPaymInfo?.reference,
           },
         }),
@@ -54,10 +54,6 @@ export const createMonobankInvoiceApi = async (
     )
 
     const text = await response.text()
-    console.log('Monobank response:', {
-      status: response.status,
-      text,
-    })
 
     let data: any
     try {

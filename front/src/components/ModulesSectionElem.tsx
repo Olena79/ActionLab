@@ -1,21 +1,64 @@
 import React, { useState } from 'react'
 import { Box, styled } from '@mui/material'
 
-interface Module {
-	title: string
-	description?: string
-	fullDescription?: string[]
-}
+const modules = [
+	{
+		title: 'Базова акробатика',
+		description: '(перекиди, колесо, стрибки вперед, падіння)',
+		fullDescription: [
+			'Техніка безпечних перекидів',
+			'Стрибкові елементи з правильною амортизацією',
+			'Система безпечних падінь та групування',
+			'Розвиток координації й просторової орієнтації',
+		],
+	},
+	{
+		title: 'Удари руками/ногами',
+		description:
+			'(включає елементи ушу, вінчун, BJJ, бокс, тайський бокс, крав мага)',
+		fullDescription: [
+			'Базові удари руками',
+			'Техніки ушу: відкрита долоня',
+			'Основи вінчун',
+			'Удари ногами',
+			'Елементи BJJ: контроль дистанції',
+			'Прикладні техніки крав мага для самозахисту',
+		],
+	},
+	{
+		title: 'Захист & Витривалість',
+		description: '(реакції, інтенсив — кросфіт)',
+		fullDescription: [
+			'Розвиток миттєвих рефлексів та реакції',
+			'Кросфіт-тренування для підвищення витривалості',
+			'Техніки ухилення та блокування',
+			'Робота з дистанцією та таймінгом',
+		],
+	},
+	{
+		title: 'Робота з холодною зброєю',
+		description: '(палки, пістолети-імітації, мечі/ножі)',
+		fullDescription: [
+			'Палиці: базові блоки, удари, хвати',
+			'Пістолети: правильна стійка, цілення, тактичні переміщення',
+			'Мечі/ножі: основні різи, захисні позиції',
+			'Комбінації рукопашного бою зі зброєю',
+		],
+	},
+	{
+		title: 'Імітація реального бою та стрес-тест',
+		fullDescription: [
+			'Робота під тиском часу та в умовах втоми',
+			'Психологічна стійкість: робота з адреналіном та реакціями',
+		],
+	},
+]
 
-interface Props {
-	modules: Module[]
-}
-
-const ModulesSectionElem: React.FC<Props> = ({ modules }) => {
+const ModulesSectionElem: React.FC = () => {
 	const [openIndex, setOpenIndex] = useState<number | null>(null)
 
 	const handleClick = (idx: number) => {
-		setOpenIndex(openIndex === idx ? null : idx) // toggle
+		setOpenIndex(openIndex === idx ? null : idx)
 	}
 
 	return (
@@ -126,5 +169,5 @@ const ArrowDown = styled('img')(({ theme }) => ({
 	color: theme.palette.primary.main,
 	position: 'absolute',
 	right: 5,
-	top: 35,
+	bottom: '-8px',
 }))

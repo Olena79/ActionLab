@@ -3,8 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose'
 export interface IPayment extends Document {
   _id: mongoose.Types.ObjectId
   userId: mongoose.Types.ObjectId
-  seminarId: mongoose.Types.ObjectId
-  seminarDate: Date
+  membershipId: mongoose.Types.ObjectId
   amount: number
   currency: string
   invoiceId: string
@@ -23,12 +22,10 @@ const paymentSchema = new Schema<IPayment>(
       ref: 'User',
       required: true,
     },
-    seminarId: {
+    membershipId: {
       type: Schema.Types.ObjectId,
-      ref: 'Seminar',
       required: true,
     },
-    seminarDate: { type: Date, required: true },
     amount: { type: Number, required: true, min: 1 },
     currency: {
       type: String,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { createInvoice, getPaymentStatus } from '../actions/monobank'
+import { getPaymentStatus } from '../actions/monobank'
 import { styled } from '@mui/material/styles'
 import ButtonContained from '../components/ButtonContained'
 import ButtonOutlined from '../components/ButtonOutlined'
@@ -71,42 +71,7 @@ const PaymentResultPage: React.FC = () => {
 	}, [paymentId])
 
 	const handleGoHome = () => navigate('/')
-
-	console.log('PaymentData: ', paymentData)
-
-	const handleCreateInvoiceAgain = async () => {
-		try {
-			console.log(
-				'🔹 Створення нового інвойсу для:',
-				paymentData.userId,
-				paymentData.seminarId,
-				paymentData.amount
-			)
-			const response = await createInvoice({
-				userId: paymentData.userId,
-				seminarId: paymentData.seminarId,
-				seminarDate: paymentData.seminarDate,
-				amount: paymentData.amount,
-				currency: 'UAH',
-			})
-
-			if (!response.invoiceUrl) {
-				alert('❌ Посилання на оплату не створено. Зверніться до підтримки')
-				return
-			}
-			console.log('🔗 Перехід на оплату:', response.invoiceUrl)
-
-			// Зберігаємо paymentId для перевірки статусу після повернення
-			if (response.paymentId) {
-				localStorage.setItem('lastPaymentId', response.paymentId)
-			}
-
-			window.location.href = response.invoiceUrl
-		} catch (err) {
-			console.error('Помилка при створенні інвойсу:', err)
-			setError('Помилка при створенні платежу. Спробуйте пізніше.')
-		}
-	}
+	const handleGoProgram = () => navigate('/program')
 
 	return (
 		<Page>
@@ -147,8 +112,8 @@ const PaymentResultPage: React.FC = () => {
 
 					<Actions>
 						<ButtonOutlined
-							text='Спробувати ще раз'
-							onClick={handleCreateInvoiceAgain}
+							text='На сторінку тренувань'
+							onClick={handleGoProgram}
 						/>
 						<ButtonContained text='На головну' onClick={handleGoHome} />
 					</Actions>

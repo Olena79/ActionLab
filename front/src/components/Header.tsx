@@ -29,7 +29,6 @@ const Header: React.FC = () => {
 			<Box sx={{ display: 'flex', gap: isMobile ? 1 : 2 }}>
 				<ToSeminarsBtn
 					icon='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1759335277/gm356ukt_vpnc7u.png'
-					text='сценічного руху'
 					isMobile={isMobile}
 				/>
 				<ButtonContained

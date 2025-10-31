@@ -1,15 +1,10 @@
 import { Request, Response } from 'express'
 import { UserModel } from '../models/User'
 import mongoose from 'mongoose'
-// import {
-//   scheduleDelayedPaymentEmail,
-//   scheduleEmailWithoutPayment,
-// } from './emailController'
 
 interface RegisterSeminarPayload {
-  seminarId: string
-  title: string
-  date: string // ISO string
+  _id?: string
+  date: Date
   firstName: string
   lastName: string
   phone: string
@@ -22,16 +17,8 @@ export const registerUser = async (
 ) => {
   try {
     const payload = req.body as RegisterSeminarPayload
-    const {
-      seminarId,
-      title,
-      date,
-      firstName,
-      lastName,
-      phone,
-      email,
-    } = payload
-    const seminarDate = new Date(date)
+    const { date, firstName, lastName, phone, email } =
+      payload
 
     const userByEmail = await UserModel.findOne({ email })
     const userByPhone = await UserModel.findOne({ phone })
@@ -68,24 +55,8 @@ export const registerUser = async (
     let user = userByEmail || userByPhone || null
 
     if (user) {
-      const alreadyRegistered = user.seminars.some(
-        (s) =>
-          s.seminarId?.toString() === seminarId &&
-          new Date(s.date).getTime() ===
-            seminarDate.getTime(),
-      )
-
-      if (alreadyRegistered) {
-        return res.status(200).json({
-          success: false,
-          message: 'already_registered',
-        })
-      }
-
-      user.seminars.push({
-        seminarId: new mongoose.Types.ObjectId(seminarId),
-        title,
-        date: seminarDate,
+      user.membership.push({
+        invoiceDate: new Date(),
         isPaid: false,
       })
     } else {
@@ -94,55 +65,27 @@ export const registerUser = async (
         lastName,
         phone,
         email,
-        seminars: [
+        date,
+        membership: [
           {
-            seminarId: new mongoose.Types.ObjectId(
-              seminarId,
-            ),
-            title,
-            date: seminarDate,
+            invoiceDate: new Date(),
             isPaid: false,
           },
         ],
-        language: 'ua',
       })
     }
 
     const savedUser = await user.save()
-    const seminar = savedUser.seminars.find(
-      (s) =>
-        s.title === title &&
-        new Date(s.date).getTime() ===
-          seminarDate.getTime(),
-    )
-
-    console.log(
-      'Підготовка семінару для відповіді фронту: ',
-      seminar,
-    )
-    console.log(
-      'Підготовка юзера для відповіді фронту: ',
-      savedUser,
-    )
-
-    if (!seminar) {
-      return res.status(200).json({
-        success: false,
-        message: 'seminar_not_found',
-      })
-    }
+    const lastMembership =
+      user.membership[user.membership.length - 1]
 
     // Успіх
     return res.status(200).json({
       success: true,
       message: 'registered',
       userId: savedUser._id,
-      seminar: {
-        _id: seminar.seminarId,
-        title: seminar.title,
-        date: seminar.date,
-        isPaid: seminar.isPaid,
-      },
+      membershipId: lastMembership._id,
+
       user: {
         _id: savedUser._id,
         firstName: savedUser.firstName,

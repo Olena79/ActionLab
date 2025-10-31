@@ -97,7 +97,7 @@ export function getPaymentStatusLabel(status: string): string {
 
 //====================================================
 
-export interface TempPaymentPayload {
+export interface PaymentPayload {
 	userData: {
 		firstName: string
 		lastName: string
@@ -112,21 +112,19 @@ export interface TempPaymentPayload {
 	invoiceUrl: string | null
 }
 
-interface TempPaymentResponse {
+interface PaymentResponse {
 	success: boolean
 	message?: string
 }
 
 export const sendPaymentEmail = async (
-	payload: TempPaymentPayload
-): Promise<TempPaymentResponse> => {
+	payload: PaymentPayload
+): Promise<PaymentResponse> => {
 	try {
-		console.log('Запит пішов')
-		const response = await api.post<TempPaymentResponse>(
+		const response = await api.post<PaymentResponse>(
 			'/payments/sendPaymentEmail',
 			payload
 		)
-		console.log('Запит прийшов')
 		return response.data
 	} catch (error: any) {
 		console.error('❌ Помилка відправки платіжного листа:', error)
