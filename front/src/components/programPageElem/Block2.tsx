@@ -73,7 +73,7 @@ const Block2: React.FC<Block1Props> = ({ onClick }) => {
 							</div>
 							<div style={{ marginBottom: 12 }}>
 								<FatSpan>Індивідуальні:</FatSpan>
-								<span>4000 грн</span>
+								<span>6000 грн</span>
 							</div>
 
 							<div
