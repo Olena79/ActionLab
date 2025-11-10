@@ -43,7 +43,7 @@ const Block1: React.FC = () => {
 					<StyledVideoItemBox>
 						<VideoPlayer
 							src='/media/Training1.mp4'
-							poster='/media/andrew1.webp'
+							poster='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758705564/phmgfhdghkilio_v01rvj.png'
 						/>
 					</StyledVideoItemBox>
 				</Box>
@@ -59,7 +59,7 @@ const Block1: React.FC = () => {
 					<StyledVideoItemBox>
 						<VideoPlayer
 							src='/media/Training3.mp4'
-							poster='/media/andrew1.webp'
+							poster='https://res.cloudinary.com/dsgqhwqr7/image/upload/v1758100004/DSC_0602sdet_zmxl4u.jpg'
 						/>
 					</StyledVideoItemBox>
 					<p style={{ color: '#6C6D6F', fontWeight: 600, textAlign: 'end' }}>
